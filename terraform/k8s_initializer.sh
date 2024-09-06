@@ -87,6 +87,8 @@ chmod 400 "$SSH_KEY_PATH"
 
 # Confirm the SSH key path
 echo "SSH key saved at: $SSH_KEY_PATH"
+ssh-keyscan -H 54.194.16.109 >> ~/.ssh/known_hosts
+
 #############################################
 # Step 1: Initialize the Control Plane Node #
 #############################################
