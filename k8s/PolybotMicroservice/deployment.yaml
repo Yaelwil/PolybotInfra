@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polybot
+  labels:
+    app: polybot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: polybot
+  template:
+    metadata:
+      labels:
+        app: polybot
+    spec:
+      containers:
+      - name: polybot
+        image: yaeli1/polybot-microservice-dev:0.0.7
+        ports:
+        - containerPort: 8443
+        env:
+        - name: TELEGRAM_APP_URL
+          valueFrom:
+            configMapKeyRef:
+              name: polybot-config
+              key: TELEGRAM_APP_URL
+        - name: ALB_URL
+          valueFrom:
+            configMapKeyRef:
+              name: polybot-config
+              key: ALB_URL
+        - name: REGION
+          valueFrom:
+            configMapKeyRef:
+              name: polybot-config
+              key: REGION
+        - name: BUCKET_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: polybot-config
+              key: BUCKET_NAME
+        - name: DYNAMODB_TABLE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: polybot-config
+              key: DYNAMODB_TABLE_NAME
+        - name: YOLO_QUEUE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: polybot-config
+              key: YOLO_QUEUE_NAME
+        - name: FILTERS_QUEUE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: polybot-config
+              key: FILTERS_QUEUE_NAME
+        - name: TELEGRAM_TOKEN
+          valueFrom:
+            configMapKeyRef:
+              name: polybot-config
+              key: TELEGRAM_TOKEN
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: polybot-service
+spec:
+  selector:
+    app: polybot
+  ports:
+    - protocol: TCP
+      port: 8443
+      targetPort: 8443

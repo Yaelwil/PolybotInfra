@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polybot-yolo
+  labels:
+    app: polybot-yolo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: polybot-yolo
+  template:
+    metadata:
+      labels:
+        app: polybot-yolo
+    spec:
+      containers:
+      - name: server
+        image: yaeli1/yolo5-microservice-prod:0.0.3
+        ports:
+        - containerPort: 3002
+        env:
+          - name: TELEGRAM_APP_URL
+            valueFrom:
+              configMapKeyRef:
+                name: polybot-config
+                key: TELEGRAM_APP_URL
+          - name: ALB_URL
+            valueFrom:
+              configMapKeyRef:
+                name: polybot-config
+                key: ALB_URL
+          - name: REGION
+            valueFrom:
+              configMapKeyRef:
+                name: polybot-config
+                key: REGION
+          - name: BUCKET_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: polybot-config
+                key: BUCKET_NAME
+          - name: DYNAMODB_TABLE_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: polybot-config
+                key: DYNAMODB_TABLE_NAME
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: polybot-yolo-service
+spec:
+  selector:
+    app: polybot
+  ports:
+    - protocol: TCP
+      port: 3002
+      targetPort: 3002
