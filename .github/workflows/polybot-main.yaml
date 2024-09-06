@@ -11,20 +11,20 @@ on:
         description: 'Build Production (eu-west-1)'
         required: false
         type: boolean
-      Destroy_Development:
-        description: 'Destroy Development (eu-west-1)'
-        required: false
-        type: boolean
-      Destroy_Production:
-        description: 'Destroy Production (eu-west-1)'
-        required: false
-        type: boolean
       Initialize_cluster_Development:
         description: 'Initialize cluster Development (eu-west-1)'
         required: false
         type: boolean
       Initialize_cluster_Production:
         description: 'Initialize cluster Production (eu-west-1)'
+        required: false
+        type: boolean
+      Destroy_Development:
+        description: 'Destroy Development (eu-west-1)'
+        required: false
+        type: boolean
+      Destroy_Production:
+        description: 'Destroy Production (eu-west-1)'
         required: false
         type: boolean
 
