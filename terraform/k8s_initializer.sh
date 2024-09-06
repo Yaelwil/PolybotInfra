@@ -91,23 +91,23 @@ echo "SSH key saved at: $SSH_KEY_PATH"
 ############################
 # Edit the SSH Config File #
 ############################
-
-mkdir -p ~/.ssh
-
-# Append configuration for control plane
-echo "Host $CONTROL_PLANE_IP
-  StrictHostKeyChecking no
-  User ubuntu
-  IdentityFile $SSH_KEY_PATH" >> ~/.ssh/config
-
-# Append configuration for worker nodes
-echo "Host $WORKER_NODE_IPS
-  StrictHostKeyChecking no
-  User ubuntu
-  IdentityFile "$SSH_KEY_PATH"" >> ~/.ssh/config
-
-# Ensure the file has the correct permissions
-chmod 600 ~/.ssh/config
+#
+#mkdir -p ~/.ssh
+#
+## Append configuration for control plane
+#echo "Host $CONTROL_PLANE_IP
+#  StrictHostKeyChecking no
+#  User ubuntu
+#  IdentityFile $SSH_KEY_PATH" >> ~/.ssh/config
+#
+## Append configuration for worker nodes
+#echo "Host $WORKER_NODE_IPS
+#  StrictHostKeyChecking no
+#  User ubuntu
+#  IdentityFile "$SSH_KEY_PATH"" >> ~/.ssh/config
+#
+## Ensure the file has the correct permissions
+#chmod 600 ~/.ssh/config
 
 #############################################
 # Step 1: Initialize the Control Plane Node #
@@ -133,7 +133,7 @@ EOF
 # Iterate over Control Plane IPs
 for CONTROL_PLANE_IP in $CONTROL_PLANE_IPS; do
   # Copy the cluster configuration file to the Control Plane node
-  sudo scp -i $SSH_KEY_PATH /tmp/cluster-configs.yaml $EC2_USER@$CONTROL_PLANE_IP:$REMOTE_CLUSTER_CONFIG_DIRECTORY
+  sudo scp -o StrictHostKeyChecking=no -i $SSH_KEY_PATH /tmp/cluster-configs.yaml $EC2_USER@$CONTROL_PLANE_IP:$REMOTE_CLUSTER_CONFIG_DIRECTORY
   if [ $? -eq 0 ]; then
     echo -e "${GREEN}Copied the file to the control plane ($CONTROL_PLANE_IP) successfully.${NC}"
   else
