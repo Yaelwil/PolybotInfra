@@ -233,6 +233,10 @@ for CONTROL_PLANE_IP in $CONTROL_PLANE_IPS; do
 
     # Install the AWS EBS CSI Driver
     helm upgrade --install aws-ebs-csi-driver -f $EBS_CSI_VALUES_PATH -n kube-system aws-ebs-csi-driver/aws-ebs-csi-driver
+    # Add kubernetes-dashboard repository
+    helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+    # Deploy a Helm Release named "kubernetes-dashboard" using the kubernetes-dashboard chart
+    helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
 EOF
 
   if [ $? -eq 0 ]; then
@@ -253,4 +257,3 @@ rm $SSH_KEY_PATH
     echo -e "${RED}Failed to remove files.${NC}"
     exit 1
   fi
-done
