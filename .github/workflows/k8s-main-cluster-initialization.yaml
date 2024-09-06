@@ -1,0 +1,33 @@
+name: Cluster Initialization Main
+
+on:
+  workflow_dispatch:
+    inputs:
+      Development:
+        description: 'Development (eu-west-1)'
+        required: false
+        type: boolean
+      Production:
+        description: 'Production (eu-west-1)'
+        required: false
+        type: boolean
+
+jobs:
+  Development:
+    if: ${{ github.event.inputs.Development == 'true' }}
+    uses: ./.github/workflows/k8s-cluster-initialization.yaml
+    with:
+      region-code: eu-west-1
+      environment: dev
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
+
+
+  Production:
+    if: ${{ github.event.inputs.Production == 'true' }}
+    uses: ./.github/workflows/k8s-cluster-initialization.yaml
+    with:
+      region-code: eu-west-1
+      environment: prod
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}

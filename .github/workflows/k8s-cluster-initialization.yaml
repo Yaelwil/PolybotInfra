@@ -1,0 +1,31 @@
+name: Cluster Initialization
+
+on:
+  workflow_call:
+    inputs:
+      region-code:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+    secrets:
+      SSH_PRIVATE_KEY:
+        required: true
+
+jobs:
+  Terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform  # The directory containing your Terraform configuration files
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cluster Initialization
+        run: |
+          export REGION=${{ inputs.region-code }}
+          export SSH_PRIVATE_KEY="${{ secrets.SSH_PRIVATE_KEY }}"
+          chmod +x k8s_initializer.sh
+          ./k8s_initializer.sh
