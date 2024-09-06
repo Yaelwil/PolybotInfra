@@ -142,7 +142,7 @@ for CONTROL_PLANE_IP in $CONTROL_PLANE_IPS; do
   fi
 
   # Connect to the Control Plane node and perform initialization
-  sudo ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
+  sudo ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
     # Install kubectl
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
@@ -180,10 +180,10 @@ rm /tmp/cluster-configs.yaml
 # Iterate over Worker Node IPs
 for WORKER_NODE_IP in $WORKER_NODE_IPS; do
   # Get the join command from the Control Plane node
-  JOIN_COMMAND=$(sudo ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "kubeadm token create --print-join-command")
+  JOIN_COMMAND=$(sudo ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "kubeadm token create --print-join-command")
 
   # Connect to the Worker Node and perform the join
-  sudo ssh -i "$SSH_KEY_PATH" "$EC2_USER@$WORKER_NODE_IP" "sudo $JOIN_COMMAND"
+  sudo ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$WORKER_NODE_IP" "sudo $JOIN_COMMAND"
 
   if [ $? -eq 0 ]; then
     echo -e "${GREEN}Worker Node joined successfully ($WORKER_NODE_IP).${NC}"
@@ -194,7 +194,7 @@ for WORKER_NODE_IP in $WORKER_NODE_IPS; do
 done
 
 # Verify that the Worker Nodes joined successfully
-sudo ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "kubectl get nodes"
+sudo ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "kubectl get nodes"
 
 ##########################
 # Step 3: Install the EBS CSI Driver #
@@ -216,7 +216,7 @@ EOF
 
 # Iterate over Control Plane IPs to copy the EBS CSI driver values file
 for CONTROL_PLANE_IP in $CONTROL_PLANE_IPS; do
-  sudo scp -i "$SSH_KEY_PATH" /tmp/ebs-csi-values.yaml "$EC2_USER@$CONTROL_PLANE_IP:$EBS_CSI_VALUES_DIRECTORY"
+  sudo scp -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" /tmp/ebs-csi-values.yaml "$EC2_USER@$CONTROL_PLANE_IP:$EBS_CSI_VALUES_DIRECTORY"
 
   if [ $? -eq 0 ]; then
     echo -e "${GREEN}Copied the EBS CSI driver values file to the Control Plane node ($CONTROL_PLANE_IP) successfully.${NC}"
@@ -226,7 +226,7 @@ for CONTROL_PLANE_IP in $CONTROL_PLANE_IPS; do
   fi
 
   # Connect to the Control Plane node and install the EBS CSI driver using Helm
-  sudo ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
+  sudo ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
     # Add the AWS EBS CSI Driver Helm repository
     helm repo add aws-ebs-csi-driver https://kubernetes-sigs.github.io/aws-ebs-csi-driver
     helm repo update
