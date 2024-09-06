@@ -60,6 +60,6 @@ jobs:
         run: |
           sleep 20
           export REGION=${{ inputs.region-code }}
-          export SSH_PRIVATE_KEY=${{ secrets.SSH_PRIVATE_KEY }}
+          export SSH_PRIVATE_KEY="${{ secrets.SSH_PRIVATE_KEY }}"
           chmod +x k8s_initializer.sh
           ./k8s_initializer.sh
