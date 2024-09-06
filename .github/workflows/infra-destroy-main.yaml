@@ -30,6 +30,5 @@ jobs:
       region-code: eu-west-1
       environment: prod
     secrets:
-      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

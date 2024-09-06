@@ -30,7 +30,6 @@ jobs:
           terraform_version: 1.2.0
 
       - name: Infrastructure destroying
-        if: ${{ github.event.inputs[ matrix.region ] == 'true' }}
         working-directory: terraform
         run: |
           # init terraform 
