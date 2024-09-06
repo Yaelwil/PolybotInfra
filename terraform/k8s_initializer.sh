@@ -92,6 +92,8 @@ echo "SSH key saved at: $SSH_KEY_PATH"
 # Edit the SSH Config File #
 ############################
 
+mkdir -p ~/.ssh
+
 # Append configuration for control plane
 echo "Host $CONTROL_PLANE_IP
   StrictHostKeyChecking no
