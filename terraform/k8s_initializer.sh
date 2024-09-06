@@ -67,14 +67,26 @@ echo -e "${GREEN}Worker Node IP(s):${NC} $WORKER_NODE_IPS"
 # Save the SSH private key from the secret to a temporary file #
 ################################################################
 
-echo "$SSH_PRIVATE_KEY" > $SSH_KEY_PATH
-chmod 400 $SSH_KEY_PATH
+# Define the path for the SSH key
+SSH_KEY_PATH="./SSH_KEY_PATH.pem"
 
-if [ -z "$SSH_KEY_PATH" ]; then
-  echo "Error: SSH_KEY_PATH is not set"
+# Create an empty file or ensure the file exists
+touch "$SSH_KEY_PATH"
+
+# Save the SSH private key from the secret to the file
+echo "$SSH_PRIVATE_KEY" > "$SSH_KEY_PATH"
+
+# Ensure the SSH key file exists before setting permissions
+if [ -z "$SSH_PRIVATE_KEY" ]; then
+  echo "Error: SSH_PRIVATE_KEY is not set"
   exit 1
 fi
 
+# Set the proper permissions for the SSH key
+chmod 400 "$SSH_KEY_PATH"
+
+# Confirm the SSH key path
+echo "SSH key saved at: $SSH_KEY_PATH"
 #############################################
 # Step 1: Initialize the Control Plane Node #
 #############################################
