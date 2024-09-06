@@ -18,7 +18,7 @@ EBS_CSI_VALUES_PATH="~/ebs-csi-values.yaml"
 # Fetch Control Plane IP #
 ##########################
 
-EC2_CONTROL_PLANE=$(aws ec2 describe-instances --region $REGION --filters "Name=tag:Name,Values=*control-plane*" "Name=tag:Name,Values=*yaelwil*" "Name=tag:Name,Values=*prod*" "Name=tag:Name,Values=*k8s-project*" --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' --output json
+EC2_CONTROL_PLANE=$(aws ec2 describe-instances --region $REGION --filters "Name=tag:Name,Values=*control-plane*" "Name=tag:Name,Values=*yaelwil*" "Name=tag:Name,Values=*prod*" "Name=tag:Name,Values=*k8s-project*" --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' --output json)
 
 # Extract Control Plane IPs
 CONTROL_PLANE_IPS=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[2]')
