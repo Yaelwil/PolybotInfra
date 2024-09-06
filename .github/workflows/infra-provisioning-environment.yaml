@@ -16,6 +16,8 @@ on:
         required: true
       AWS_SECRET_ACCESS_KEY:
         required: true
+      SSH_PRIVATE_KEY:
+        required: true
 
 jobs:
   Terraform:
@@ -58,6 +60,6 @@ jobs:
         run: |
           sleep 20
           export REGION=${{ inputs.region-code }}
-          export SSH_PRIVATE_KEY=${{ secrets.SSH_PRIVATE_KEY_K8S }}
+          export SSH_PRIVATE_KEY=${{ secrets.SSH_PRIVATE_KEY }}
           chmod +x k8s_initializer.sh
           ./k8s_initializer.sh
