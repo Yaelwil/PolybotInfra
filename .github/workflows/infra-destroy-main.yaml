@@ -1,4 +1,4 @@
-name: Polybot Infrastructure Terraform Main
+name: Polybot Destroy Terraform Main
 
 on:
   workflow_dispatch:
@@ -15,18 +15,17 @@ on:
 jobs:
   Development:
     if: ${{ github.event.inputs.Development == 'true' }}
-    uses: ./.github/workflows/infra-provisioning-environment.yaml
+    uses: ./.github/workflows/infra-destroy-environment.yaml
     with:
       region-code: eu-west-1
       environment: dev
     secrets:
-      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_DEV }}
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   Production:
     if: ${{ github.event.inputs.Production == 'true' }}
-    uses: ./.github/workflows/infra-provisioning-environment.yaml
+    uses: ./.github/workflows/infra-destroy-environment.yaml
     with:
       region-code: eu-west-1
       environment: prod
