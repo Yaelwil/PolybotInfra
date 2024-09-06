@@ -88,14 +88,24 @@ chmod 400 "$SSH_KEY_PATH"
 # Confirm the SSH key path
 echo "SSH key saved at: $SSH_KEY_PATH"
 
-# Create the .ssh directory if it does not exist
-mkdir -p ~/.ssh
+############################
+# Edit the SSH Config File #
+############################
 
-# Add the host key to known hosts
-ssh-keyscan -H 54.194.16.109 >> ~/.ssh/known_hosts
+# Append configuration for control plane
+echo "Host $CONTROL_PLANE_IP
+  StrictHostKeyChecking no
+  User ubuntu
+  IdentityFile $SSH_KEY_PATH" >> ~/.ssh/config
 
-# Confirm the known_hosts file has been updated
-echo "Known hosts updated."
+# Append configuration for worker nodes
+echo "Host $WORKER_NODE_IPS
+  StrictHostKeyChecking no
+  User ubuntu
+  IdentityFile "$SSH_KEY_PATH"" >> ~/.ssh/config
+
+# Ensure the file has the correct permissions
+chmod 600 ~/.ssh/config
 
 #############################################
 # Step 1: Initialize the Control Plane Node #
