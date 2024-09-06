@@ -70,6 +70,11 @@ echo -e "${GREEN}Worker Node IP(s):${NC} $WORKER_NODE_IPS"
 echo "$SSH_PRIVATE_KEY" > $SSH_KEY_PATH
 chmod 400 $SSH_KEY_PATH
 
+if [ -z "$SSH_KEY_PATH" ]; then
+  echo "Error: SSH_KEY_PATH is not set"
+  exit 1
+fi
+
 #############################################
 # Step 1: Initialize the Control Plane Node #
 #############################################
