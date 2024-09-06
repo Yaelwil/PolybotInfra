@@ -26,6 +26,7 @@ jobs:
       - name: Cluster Initialization
         run: |
           export REGION=${{ inputs.region-code }}
+          export ENV=${{ inputs.environment }}
           export SSH_PRIVATE_KEY="${{ secrets.SSH_PRIVATE_KEY }}"
           chmod +x k8s_initializer.sh
           ./k8s_initializer.sh
