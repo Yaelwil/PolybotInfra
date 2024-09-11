@@ -65,6 +65,7 @@ jobs:
       - name: Copy and run k8s files
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > yaelwil-ohio.pem
+          chmod 400 yaelwil-ohio.pem
           scp -i "yaelwil-ohio.pem" -r k8s ubuntu@$CONTROL_PLANE_IP:~/
         env:
           CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
