@@ -112,7 +112,7 @@ EOF
 # Iterate over Control Plane IPs
 for CONTROL_PLANE_IP in $CONTROL_PLANE_IPS; do
   # Copy the cluster configuration file to the Control Plane node
-  scp -i $SSH_KEY_PATH /tmp/cluster-configs.yaml $EC2_USER@$CONTROL_PLANE_IP:$REMOTE_CLUSTER_CONFIG_DIRECTORY
+  scp -o StrictHostKeyChecking=no -i $SSH_KEY_PATH /tmp/cluster-configs.yaml $EC2_USER@$CONTROL_PLANE_IP:$REMOTE_CLUSTER_CONFIG_DIRECTORY
   if [ $? -eq 0 ]; then
     echo -e "${GREEN}Copied the file to the control plane ($CONTROL_PLANE_IP) successfully.${NC}"
   else
@@ -121,7 +121,7 @@ for CONTROL_PLANE_IP in $CONTROL_PLANE_IPS; do
   fi
 
 # Run the kubeadm init command on the remote machine and capture the output
-ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "sudo kubeadm init --config $REMOTE_CLUSTER_CONFIG_PATH" | tee kubeadm-init-output.txt
+ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "sudo kubeadm init --config $REMOTE_CLUSTER_CONFIG_PATH" | tee kubeadm-init-output.txt
 
 # Extract the 'kubeadm join' command from the output
 COMMAND_TO_JOIN=$(grep -A 2 "kubeadm join" kubeadm-init-output.txt)
@@ -138,7 +138,7 @@ fi
 # Step 2: Set up kubeconfig #
 #############################
 
-ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
+ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
     # Create .kube directory
     mkdir -p \$HOME/.kube
 
@@ -164,10 +164,10 @@ fi
 for WORKER_NODE_IP in $WORKER_NODE_IPS; do
 
   # Connect to the Worker Node and perform the join
-  ssh -i "$SSH_KEY_PATH" "$EC2_USER@$WORKER_NODE_IP" "sudo $COMMAND_TO_JOIN"
+  ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$WORKER_NODE_IP" "sudo $COMMAND_TO_JOIN"
 
 # Verify that the Worker Nodes joined successfully
-ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "kubectl get nodes"
+ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "kubectl get nodes"
 
   if [ $? -eq 0 ]; then
     echo -e "${GREEN}Worker Node joined successfully ($WORKER_NODE_IP).${NC}"
@@ -182,7 +182,7 @@ done
 #############################################################
 
   # Connect to the Control Plane node and perform initialization
-  ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
+  ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
     # Install Flannel CNI plugin
     kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
 
@@ -225,7 +225,7 @@ EOF
 
 # Iterate over Control Plane IPs to copy the EBS CSI driver values file
 for CONTROL_PLANE_IP in $CONTROL_PLANE_IPS; do
-  scp -i "$SSH_KEY_PATH" /tmp/ebs-csi-values.yaml "$EC2_USER@$CONTROL_PLANE_IP:$EBS_CSI_VALUES_DIRECTORY"
+  scp -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" /tmp/ebs-csi-values.yaml "$EC2_USER@$CONTROL_PLANE_IP:$EBS_CSI_VALUES_DIRECTORY"
 
   if [ $? -eq 0 ]; then
     echo -e "${GREEN}Copied the EBS CSI driver values file to the Control Plane node ($CONTROL_PLANE_IP) successfully.${NC}"
@@ -235,7 +235,7 @@ for CONTROL_PLANE_IP in $CONTROL_PLANE_IPS; do
   fi
 
   # Connect to the Control Plane node and install the EBS CSI driver using Helm
-  ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
+  ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
     # Add the AWS EBS CSI Driver Helm repository
     helm repo add aws-ebs-csi-driver https://kubernetes-sigs.github.io/aws-ebs-csi-driver
     helm repo update
@@ -262,7 +262,7 @@ rm /tmp/ebs-csi-values.yaml
 # Install K8S dashboard and ArgoCD #
 ####################################
 
-ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
+ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
 
   # Add kubernetes-dashboard repository
   helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
