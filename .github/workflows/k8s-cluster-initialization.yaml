@@ -51,6 +51,11 @@ jobs:
           
           # Extract Control Plane IPs
           CONTROL_PLANE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[2]')
+          echo "CONTROL_PLANE_IP=$CONTROL_PLANE_IP" >> $GITHUB_ENV
+
+      - name: Debug Control Plane IP
+        run: |
+          echo "Control Plane IP: $CONTROL_PLANE_IP"
 
       - name: Copy and run k8s files
         run: |
