@@ -55,3 +55,41 @@ jobs:
         run: |
           export TF_VAR_botToken=${{ secrets.TELEGRAM_TOKEN }}
           terraform apply -auto-approve -var-file=${{ inputs.region-code }}.${{ inputs.environment }}.tfvars
+
+      - name: Cluster Initialization
+        run: |
+          export REGION=${{ inputs.region-code }}
+          export ENV=${{ inputs.environment }}
+          export SSH_PRIVATE_KEY="${{ secrets.SSH_PRIVATE_KEY }}"
+          chmod +x k8s_initializer.sh
+          ./k8s_initializer.sh
+
+      - name: Get the control plane ip
+        run: |
+          EC2_CONTROL_PLANE=$(aws ec2 describe-instances --region ${{ inputs.region-code }} \
+              --filters "Name=tag:Name,Values=*control-plane*" \
+                        "Name=tag:Name,Values=*yaelwil*" \
+                        "Name=tag:Name,Values=*${{ inputs.environment }}" \
+                        "Name=tag:Name,Values=*k8s-project*" \
+              --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
+              --output json)
+          
+          # Extract Control Plane IPs
+          CONTROL_PLANE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[2]')
+          
+          echo "CONTROL_PLANE_IP: $CONTROL_PLANE_IP"
+          echo "CONTROL_PLANE_IP=$CONTROL_PLANE_IP" >> $GITHUB_ENV
+
+      - name: Debug Control Plane IP
+        run: |
+          echo "Control Plane IP: $CONTROL_PLANE_IP"
+        env:
+          CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
+
+
+      - name: Copy and run k8s files
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > yaelwil-ohio.pem
+          scp -i "yaelwil-ohio.pem" -r k8s ubuntu@$CONTROL_PLANE_IP:~/
+        env:
+          CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
