@@ -8,13 +8,13 @@ NC='\033[0m' # No Color
 
 # Variables (Customize these as needed)
 EC2_USER="ubuntu"
-SSH_KEY_PATH="~/yaelwil_k8s_project.pem"
+SSH_KEY_PATH="~/yaelwil-ohio.pem"
 CLUSTER_NAME="yaelwil-cluster-k8s"
 REMOTE_CLUSTER_CONFIG_DIRECTORY="~/"
 REMOTE_CLUSTER_CONFIG_PATH="~/cluster-configs.yaml"
 EBS_CSI_VALUES_DIRECTORY="~/"
 EBS_CSI_VALUES_PATH="~/ebs-csi-values.yaml"
-REGION="eu-west-1"
+REGION="us-east-2"
 
 ##########################
 # Fetch Control Plane IP #
@@ -60,9 +60,9 @@ fi
 # Print Worker Node IPs
 echo -e "${GREEN}Worker Node IP(s):${NC} $WORKER_NODE_IPS"
 
-##########################
+#############################################
 # Step 1: Initialize the Control Plane Node #
-##########################
+#############################################
 
 # Create the cluster-configs.yaml locally
 cat <<EOF > /tmp/cluster-configs.yaml
@@ -92,49 +92,54 @@ for CONTROL_PLANE_IP in $CONTROL_PLANE_IPS; do
     exit 1
   fi
 
-  # Connect to the Control Plane node and perform initialization
-  ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
-    # Install kubectl
-    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+# Run the kubeadm init command on the remote machine and capture the output
+ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "sudo kubeadm init --config $REMOTE_CLUSTER_CONFIG_PATH" | tee kubeadm-init-output.txt
 
-    # Initialize the Kubernetes cluster using kubeadm
-    sudo kubeadm init --config $REMOTE_CLUSTER_CONFIG_PATH
+# Extract the 'kubeadm join' command from the output
+COMMAND_TO_JOIN=$(grep -A 2 "kubeadm join" kubeadm-init-output.txt)
 
-    # Set up kubeconfig for kubectl
+# Check if the command was found and display it
+if [ -n "$COMMAND_TO_JOIN" ]; then
+  echo -e "${GREEN}COMMAND_TO_JOIN: $COMMAND_TO_JOIN${NC}"
+else
+  echo -e "${RED}Didn't get command to join.${NC}"
+  exit 1
+fi
+
+#############################
+# Step 2: Set up kubeconfig #
+#############################
+
+ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
+    # Create .kube directory
     mkdir -p \$HOME/.kube
+
+    # Copy the Kubernetes admin configuration file
     sudo cp -i /etc/kubernetes/admin.conf \$HOME/.kube/config
+
+    # Change ownership of the configuration file
     sudo chown \$(id -u):\$(id -g) \$HOME/.kube/config
-
-    # Install Flannel CNI plugin
-    kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
-
-    # Install AWS Cloud Controller Manager
-    kubectl apply -k 'github.com/kubernetes/cloud-provider-aws/examples/existing-cluster/base/?ref=master'
 EOF
 
-  if [ $? -eq 0 ]; then
-    echo -e "${GREEN}Control Plane node initialization completed successfully ($CONTROL_PLANE_IP).${NC}"
-  else
-    echo -e "${RED}Control Plane node initialization failed ($CONTROL_PLANE_IP).${NC}"
-    exit 1
-  fi
-done
+if [ $? -eq 0 ]; then
+  echo -e "${GREEN}Setup completed${NC}"
+else
+  echo -e "${RED}Setup not completed${NC}"
+  exit 1
+fi
 
-# Clean up the local cluster config file
-rm /tmp/cluster-configs.yaml
-
-##########################
-# Step 2: Join Worker Nodes #
-##########################
+#############################
+# Step 3: Join Worker Nodes #
+#############################
 
 # Iterate over Worker Node IPs
 for WORKER_NODE_IP in $WORKER_NODE_IPS; do
-  # Get the join command from the Control Plane node
-  JOIN_COMMAND=$(ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "kubeadm token create --print-join-command")
 
   # Connect to the Worker Node and perform the join
-  ssh -i "$SSH_KEY_PATH" "$EC2_USER@$WORKER_NODE_IP" "sudo $JOIN_COMMAND"
+  ssh -i "$SSH_KEY_PATH" "$EC2_USER@$WORKER_NODE_IP" "sudo $COMMAND_TO_JOIN"
+
+# Verify that the Worker Nodes joined successfully
+ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "kubectl get nodes"
 
   if [ $? -eq 0 ]; then
     echo -e "${GREEN}Worker Node joined successfully ($WORKER_NODE_IP).${NC}"
@@ -144,12 +149,37 @@ for WORKER_NODE_IP in $WORKER_NODE_IPS; do
   fi
 done
 
-# Verify that the Worker Nodes joined successfully
-ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "kubectl get nodes"
+#############################################################
+# Step 4: Install Flannel and AWS Cloud Controller Manager  #
+#############################################################
 
-##########################
-# Step 3: Install the EBS CSI Driver #
-##########################
+  # Connect to the Control Plane node and perform initialization
+  ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
+    # Install Flannel CNI plugin
+    kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+
+    # Install AWS Cloud Controller Manager
+    kubectl apply -k 'github.com/kubernetes/cloud-provider-aws/examples/existing-cluster/base/?ref=master'
+EOF
+
+  if [ $? -eq 0 ]; then
+    echo -e "${GREEN}Flannel and AWS Cloud Controller Manager was installed ($CONTROL_PLANE_IP).${NC}"
+  else
+    echo -e "${RED}Flannel and AWS Cloud Controller Manager wasn't installed ($CONTROL_PLANE_IP).${NC}"
+    exit 1
+  fi
+done
+
+############################
+# Clean unnecessary files  #
+############################
+
+rm /tmp/cluster-configs.yaml
+rm ./kubeadm-init-output.txt
+
+######################################
+# Step 5: Install the EBS CSI Driver #
+######################################
 
 # Create the ebs-csi-values.yaml locally
 cat <<EOF > /tmp/ebs-csi-values.yaml
@@ -194,5 +224,36 @@ EOF
   fi
 done
 
-# Clean up the local EBS CSI values file
+############################
+# Clean unnecessary files #
+############################
+
 rm /tmp/ebs-csi-values.yaml
+
+####################################
+# Install K8S dashboard and ArgoCD #
+####################################
+
+ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
+
+  # Add kubernetes-dashboard repository
+  helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+  # Deploy a Helm Release named "kubernetes-dashboard" using the kubernetes-dashboard chart
+  helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
+
+  # Install ArgoCD
+  kubectl create namespace argocd
+  kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+#  # Install ArgoCD CLI
+#  curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.5.0/argocd-linux-amd64
+#  chmod +x /usr/local/bin/argocd
+#  argocd version
+EOF
+
+if [ $? -eq 0 ]; then
+  echo -e "${GREEN}K8S dashboard and ArgoCD were installed${NC}"
+else
+  echo -e "${RED}K8S dashboard and ArgoCD CLI weren't installed${NC}"
+  exit 1
+fi
