@@ -55,3 +55,60 @@ jobs:
         run: |
           export TF_VAR_botToken=${{ secrets.TELEGRAM_TOKEN }}
           terraform apply -auto-approve -var-file=${{ inputs.region-code }}.${{ inputs.environment }}.tfvars
+
+      - name: Get the control plane ip
+        run: |
+          EC2_CONTROL_PLANE=$(aws ec2 describe-instances --region ${{ inputs.region-code }} \
+              --filters "Name=tag:Name,Values=*control-plane*" \
+                        "Name=tag:Name,Values=*yaelwil*" \
+                        "Name=tag:Name,Values=*${{ inputs.environment }}*" \
+                        "Name=tag:Name,Values=*k8s-project*" \
+              --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
+              --output json)
+          
+          # Extract Control Plane IPs
+          CONTROL_PLANE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[0]')
+          echo "INSTANCE_CP_ID=$CONTROL_PLANE_IP" >> $GITHUB_ENV
+
+      - name: Get the worker node ip
+        run: |
+          EC2_WORKER_NODE=$(aws ec2 describe-instances --region ${{ inputs.region-code }} \
+              --filters "Name=tag:Name,Values=*control-plane*" \
+                        "Name=tag:Name,Values=*yaelwil*" \
+                        "Name=tag:Name,Values=*${{ inputs.environment }}*" \
+                        "Name=tag:Name,Values=*k8s-project*" \
+              --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
+              --output json)
+          
+          # Extract Worker Nodes IPs
+          WORKER_NODE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[0]')
+          echo "INSTANCE_WN_IDS=$WORKER_NODE_IP" >> $GITHUB_ENV
+
+      - name: Wait for Control Plane and Worker Node Instances Status
+        run: |
+          # Wait for Control Plane instance to be OK
+          aws ec2 wait instance-status-ok --instance-ids "$INSTANCE_CP_ID" --region ${{ inputs.region-code }}
+
+          # Wait for all Worker Node instances to be OK
+          for instance_id in $INSTANCE_WN_IDS; do
+            aws ec2 wait instance-status-ok --instance-ids "$instance_id" --region ${{ inputs.region-code }}
+          done
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Cluster Initialization
+        run: |
+          export REGION=${{ inputs.region-code }}
+          export ENV=${{ inputs.environment }}
+          export SSH_PRIVATE_KEY="${{ secrets.SSH_PRIVATE_KEY }}"
+          chmod +x k8s_initializer.sh
+          ./k8s_initializer.sh
+
+      - name: Copy and run k8s files
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > yaelwil-ohio.pem
+          chmod 400 yaelwil-ohio.pem
+          scp -i "yaelwil-ohio.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/
+        env:
+          CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}

@@ -10,4 +10,4 @@ data:
   BUCKET_NAME: "yaelwil-bucket-dev-k8s-project"
   DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-dev-k8s-project"
   YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-dev-k8s-project.fifo"
-  FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-dev-k8s-project.fifo
+  FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-dev-k8s-project.fifo"
