@@ -33,7 +33,7 @@ on:
         type: boolean
 
       Destroy_Development_us_east_2:
-        description: 'Destroy Production (us-east-2)'
+        description: 'Destroy Development (us-east-2)'
         required: false
         type: boolean
 
@@ -96,7 +96,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   Destroy_Development_us_east_2:
-    if: ${{ github.event.inputs.Destroy_Dev_us_east_2 == 'true' }}
+    if: ${{ github.event.inputs.Destroy_Development_us_east_2 == 'true' }}
     uses: ./.github/workflows/infra-destroy-environment.yaml
     with:
       region-code: us-east-2
