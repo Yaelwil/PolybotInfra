@@ -67,8 +67,10 @@ jobs:
               --output json)
           
           # Extract Control Plane IPs
-          CONTROL_PLANE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[0]')
-          echo "INSTANCE_CP_ID=$CONTROL_PLANE_IP" >> $GITHUB_ENV
+          CONTROL_PLANE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[2]')          
+          INSTANCE_CP_ID=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[0]')
+          echo "CONTROL_PLANE_IP=$CONTROL_PLANE_IP" >> $GITHUB_ENV
+          echo "INSTANCE_CP_ID=$INSTANCE_CP_ID" >> $GITHUB_ENV
 
       - name: Get the worker node ip
         run: |
@@ -109,7 +111,7 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > yaelwil-ohio.pem
           chmod 400 yaelwil-ohio.pem
-          scp -i "yaelwil-ohio.pem" -r ../k8s ubuntu@$INSTANCE_CP_ID:~/
+          scp -i "yaelwil-ohio.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/
           rm yaelwil-ohio.pem
         env:
-          CONTROL_PLANE_IP: ${{ env.INSTANCE_CP_ID }}
+          CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
