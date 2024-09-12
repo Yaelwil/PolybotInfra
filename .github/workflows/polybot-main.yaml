@@ -3,34 +3,43 @@ name: Polybot Main
 on:
   workflow_dispatch:
     inputs:
-      Build_Development:
+      Build_Development_eu_west_1:
         description: 'Build Development (eu-west-1)'
         required: false
         type: boolean
-      Build_Production:
+      Build_Production_eu_west_1:
         description: 'Build Production (eu-west-1)'
         required: false
         type: boolean
-      Initialize_cluster_Development:
-        description: 'Initialize cluster Development (eu-west-1)'
+      Build_Production_us_east_2:
+        description: 'Build Production (us-east-2)'
         required: false
         type: boolean
-      Initialize_cluster_Production:
-        description: 'Initialize cluster Production (eu-west-1)'
-        required: false
-        type: boolean
-      Destroy_Development:
+#      Initialize_cluster_Development:
+#        description: 'Initialize cluster Development (eu-west-1)'
+#        required: false
+#        type: boolean
+#      Initialize_cluster_Production:
+#        description: 'Initialize cluster Production (eu-west-1)'
+#        required: false
+#        type: boolean
+      Destroy_Development_eu_west_1:
         description: 'Destroy Development (eu-west-1)'
         required: false
         type: boolean
-      Destroy_Production:
+      Destroy_Production_eu_west_1:
         description: 'Destroy Production (eu-west-1)'
+        required: false
+        type: boolean
+
+      Destroy_Production_us_east_2:
+        description: 'Destroy Production (us-east-2)'
         required: false
         type: boolean
 
 
 jobs:
-  Build_Development:
+  Build_Development_eu_west_1:
     if: ${{ github.event.inputs.Build_Development == 'true' }}
     uses: ./.github/workflows/infra-provisioning-environment.yaml
     with:
@@ -42,8 +51,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
 
-
-  Build_Production:
+  Build_Production_eu_west_1:
     if: ${{ github.event.inputs.Build_Production == 'true' }}
     uses: ./.github/workflows/infra-provisioning-environment.yaml
     with:
@@ -55,7 +63,19 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
 
-  Destroy_Development:
+  Build_Production_us_east_2:
+    if: ${{ github.event.inputs.Build_Production == 'true' }}
+    uses: ./.github/workflows/infra-provisioning-environment.yaml
+    with:
+      region-code: us-east-2
+      environment: prod
+    secrets:
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
+
+  Destroy_Development_eu_west_1:
     if: ${{ github.event.inputs.Destroy_Development == 'true' }}
     uses: ./.github/workflows/infra-destroy-environment.yaml
     with:
@@ -65,11 +85,21 @@ jobs:
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-  Destroy_Production:
+  Destroy_Production_eu_west_1:
     if: ${{ github.event.inputs.Destroy_Production == 'true' }}
     uses: ./.github/workflows/infra-destroy-environment.yaml
     with:
       region-code: eu-west-1
+      environment: prod
+    secrets:
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  Destroy_Production_us_east_2:
+    if: ${{ github.event.inputs.Destroy_Production == 'true' }}
+    uses: ./.github/workflows/infra-destroy-environment.yaml
+    with:
+      region-code: us-east-2
       environment: prod
     secrets:
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
