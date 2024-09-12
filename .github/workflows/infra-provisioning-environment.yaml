@@ -109,6 +109,7 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > yaelwil-ohio.pem
           chmod 400 yaelwil-ohio.pem
-          scp -i "yaelwil-ohio.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/
+          scp -i "yaelwil-ohio.pem" -r ../k8s ubuntu@$INSTANCE_CP_ID:~/
+          rm yaelwil-ohio.pem
         env:
-          CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
+          CONTROL_PLANE_IP: ${{ env.INSTANCE_CP_ID }}
