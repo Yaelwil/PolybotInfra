@@ -15,12 +15,12 @@ on:
         description: 'Build Production (us-east-2)'
         required: false
         type: boolean
-      Initialize_Cluster_eu_west_1:
-        description: 'Initialize Cluster (eu-west-1)'
+      Initialize_Cluster_Prod_eu_west_1:
+        description: 'Initialize Cluster Prod (eu-west-1)'
         required: false
         type: boolean
-      Initialize_Cluster_us_east_2:
-        description: 'Initialize Cluster (us-east-2)'
+      Initialize_Cluster_Prod_us_east_2:
+        description: 'Initialize Cluster Prod (us-east-2)'
         required: false
         type: boolean
       Destroy_Development_eu_west_1:
@@ -105,17 +105,19 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       
   Initialize_Cluster_eu_west_1:
-    if: ${{ github.event.inputs.Initialize_Cluster_eu_west_1 == 'true' }}
+    if: ${{ github.event.inputs.Initialize_Cluster_Prod_eu_west_1 == 'true' }}
     uses: ./.github/workflows/k8s-cluster-initialization.yaml
     with:
       region-code: eu-west-1
       environment: prod
     secrets:
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
 
   Initialize_Cluster_us_east_2:
-    if: ${{ github.event.inputs.Initialize_Cluster_us_east_2 == 'true' }}
+    if: ${{ github.event.inputs.Initialize_Cluster_Prod_us_east_2 == 'true' }}
     uses: ./.github/workflows/k8s-cluster-initialization.yaml
     with:
       region-code: us-east-2
