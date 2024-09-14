@@ -117,12 +117,12 @@ jobs:
           "kubectl create namespace ${{ inputs.environment }} --dry-run=client -o yaml | kubectl apply -f -"
 
           # Generate the ConfigMap YAML file
+#          namespace: ${{ inputs.environment }}  # or specify the namespace you are using
           cat <<EOF > configmap.yaml
           apiVersion: v1
           kind: ConfigMap
           metadata:
             name: polybot-config
-            namespace: ${{ inputs.environment }}  # or specify the namespace you are using
           data:
             TELEGRAM_APP_URL: "https://yaelwil.int-devops.click"
             ALB_URL: "http://yaelwil.int-devops.click:80"
