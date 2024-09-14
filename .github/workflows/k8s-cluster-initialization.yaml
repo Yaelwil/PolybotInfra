@@ -33,6 +33,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Get the control plane ip
+        run: |
+          EC2_CONTROL_PLANE=$(aws ec2 describe-instances --region ${{ inputs.region-code }} \
+              --filters "Name=tag:Name,Values=*control-plane*" \
+                        "Name=tag:Name,Values=*yaelwil*" \
+                        "Name=tag:Name,Values=*${{ inputs.environment }}*" \
+                        "Name=tag:Name,Values=*k8s-project*" \
+              --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
+              --output json)
+          
+          # Extract Control Plane IPs
+          CONTROL_PLANE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[2]')          
+          INSTANCE_CP_ID=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[0]')
+          echo "CONTROL_PLANE_IP=$CONTROL_PLANE_IP" >> $GITHUB_ENV
+          echo "INSTANCE_CP_ID=$INSTANCE_CP_ID" >> $GITHUB_ENV
+
+      - name: Get the worker node ip
+        run: |
+          EC2_WORKER_NODE=$(aws ec2 describe-instances --region ${{ inputs.region-code }} \
+              --filters "Name=tag:Name,Values=*control-plane*" \
+                        "Name=tag:Name,Values=*yaelwil*" \
+                        "Name=tag:Name,Values=*${{ inputs.environment }}*" \
+                        "Name=tag:Name,Values=*k8s-project*" \
+              --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
+              --output json)
+          
+          # Extract Worker Nodes IPs
+          WORKER_NODE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[0]')
+          echo "INSTANCE_WN_IDS=$WORKER_NODE_IP" >> $GITHUB_ENV
+
       - name: Cluster Initialization
         run: |
           export REGION=${{ inputs.region-code }}
