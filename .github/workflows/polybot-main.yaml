@@ -95,27 +95,3 @@ jobs:
     secrets:
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-#  Initialize_cluster_Development:
-#    if: ${{ github.event.inputs.Initialize_cluster_Development == 'true' }}
-#    uses: ./.github/workflows/k8s-cluster-initialization.yaml
-#    with:
-#      region-code: eu-west-1
-#      environment: dev
-#    secrets:
-#      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
-#      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-#      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#
-#
-#  Initialize_cluster_Production:
-#    if: ${{ github.event.inputs.Initialize_cluster_Production == 'true' }}
-#    uses: ./.github/workflows/k8s-cluster-initialization.yaml
-#    with:
-#      region-code: eu-west-1
-#      environment: prod
-#    secrets:
-#      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
-#      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-#      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
