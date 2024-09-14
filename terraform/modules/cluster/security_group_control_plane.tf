@@ -2,7 +2,7 @@
 # Security group for Control Plane EC2 instances #
 ##################################################
 resource "aws_security_group" "control_plane_sg" {
-  name = "${var.owner_name}-control-plane-sg-${var.env}-${var.project_name}"
+  name = "${var.owner_name}-control-plane-sg-${var.env}-${var.region}-${var.project_name}"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -93,7 +93,7 @@ resource "aws_security_group" "control_plane_sg" {
   }
 
   tags = {
-    Name      = "${var.owner_name}-control-plane-sg-${var.env}-${var.project_name}"
+    Name      = "${var.owner_name}-control-plane-sg-${var.env}-${var.region}-${var.project_name}"
     Terraform = "true"
   }
 }

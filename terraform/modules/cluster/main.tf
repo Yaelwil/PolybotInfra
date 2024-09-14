@@ -7,7 +7,7 @@ resource "aws_instance" "control_plane" {
   security_groups        = [aws_security_group.control_plane_sg.id]
 
   tags = {
-    Name = "${var.owner_name}-control-plane-${var.env}-${var.project_name}"
+    Name = "${var.owner_name}-control-plane-${var.env}-${var.region}-${var.project_name}"
     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 
@@ -34,7 +34,7 @@ resource "aws_instance" "worker_node" {
   security_groups        = [aws_security_group.worker_node_sg.id]
 
   tags = {
-    Name = "${var.owner_name}-worker-node-${var.env}-${var.project_name}"
+    Name = "${var.owner_name}-worker-node-${var.env}-${var.region}-${var.project_name}"
     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 

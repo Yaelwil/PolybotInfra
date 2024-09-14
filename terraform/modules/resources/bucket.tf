@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "project_bucket" {
-  bucket = "${var.owner}-bucket-${var.env}-${var.project}"
+  bucket = "${var.owner}-bucket-${var.env}-${var.region}-${var.project}"
   acl    = "private"
 
 #   lifecycle {
@@ -7,7 +7,7 @@ resource "aws_s3_bucket" "project_bucket" {
 #   }
 
   tags = {
-    Name      = "${var.owner}-bucket-${var.env}-${var.project}"
+    Name      = "${var.owner}-bucket-${var.env}-${var.region}-${var.project}"
     Terraform = "true"
   }
 }

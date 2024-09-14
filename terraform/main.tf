@@ -8,7 +8,8 @@ module "vpc" {
   public_subnet_2    = var.public_subnet_2
   availability_zone_1 = var.availability_zone_1
   availability_zone_2 = var.availability_zone_2
-  env = var.env 
+  env = var.env
+  region = var.region
 }
 
 module "resources" {

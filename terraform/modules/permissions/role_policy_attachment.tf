@@ -48,12 +48,12 @@ resource "aws_iam_role_policy_attachment" "control_plane_to_ecr_read_only_policy
 }
 
 resource "aws_iam_instance_profile" "control_plane_instance_profile" {
-  name = "${var.owner}-control-plane-instance-profile-${var.env}-${var.project}"
+  name = "${var.owner}-control-plane-instance-profile-${var.env}-${var.region}-${var.project}"
 
   role = aws_iam_role.control_plane_role.name  // Reference to the IAM role name
 
   tags = {
-    Name      = "${var.owner}-control-plane-instance-profile-${var.env}-${var.project}"
+    Name      = "${var.owner}-control-plane-instance-profile-${var.env}-${var.region}-${var.project}"
     Terraform = "true"
   }
 }
@@ -110,12 +110,12 @@ resource "aws_iam_role_policy_attachment" "worker_nodes_role_to_ebs_csi_driver_p
 }
 
 resource "aws_iam_instance_profile" "worker_node_instance_profile" {
-  name = "${var.owner}-worker-nodes-instance-profile-${var.env}-${var.project}"
+  name = "${var.owner}-worker-nodes-instance-profile-${var.env}-${var.region}-${var.project}"
 
   role = aws_iam_role.worker_nodes_role.name  // Reference to the IAM role name
 
   tags = {
-    Name      = "${var.owner}-worker-nodes-instance-profile-${var.env}-${var.project}"
+    Name      = "${var.owner}-worker-nodes-instance-profile-${var.env}-${var.region}-${var.project}"
     Terraform = "true"
   }
 }

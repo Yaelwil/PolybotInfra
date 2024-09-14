@@ -47,3 +47,7 @@ variable "env" {
   type = string
   description = "Environment"
 }
+variable "region" {
+  description = "region"
+  type        = string
+}

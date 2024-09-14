@@ -3,12 +3,12 @@
 ####################
 
 resource "aws_sqs_queue" "yolov5_sqs_queue" {
-  name       = "${var.owner}-yolov5-sqs-queue-${var.env}-${var.project}.fifo"
+  name       = "${var.owner}-yolov5-sqs-queue-${var.env}-${var.region}-${var.project}.fifo"
   fifo_queue = true
   content_based_deduplication = true
 
   tags = {
-    Name      = "${var.owner}-yolov5-sqs-queue-${var.env}-${var.project}"
+    Name      = "${var.owner}-yolov5-sqs-queue-${var.env}-${var.region}-${var.project}"
     Terraform = "true"
   }
 }
@@ -18,12 +18,12 @@ resource "aws_sqs_queue" "yolov5_sqs_queue" {
 #####################
 
 resource "aws_sqs_queue" "filters_sqs_queue" {
-  name       = "${var.owner}-filters-sqs-queue-${var.env}-${var.project}.fifo"
+  name       = "${var.owner}-filters-sqs-queue-${var.env}-${var.region}-${var.project}.fifo"
   fifo_queue = true
   content_based_deduplication = true
 
   tags = {
-    Name      = "${var.owner}-filters-sqs-queue-${var.env}-${var.project}"
+    Name      = "${var.owner}-filters-sqs-queue-${var.env}-${var.region}-${var.project}"
     Terraform = "true"
   }
 }

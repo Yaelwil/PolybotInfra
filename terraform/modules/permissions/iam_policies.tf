@@ -2,7 +2,7 @@
 # Access to S3 bucket #
 #######################
 resource "aws_iam_policy" "s3_access_policy" {
-  name        = "${var.owner}-bucket-policy-${var.env}-${var.project}"
+  name        = "${var.owner}-bucket-policy-${var.env}-${var.region}-${var.project}"
   description = "Policy for s3 access"
   policy      = jsonencode({
     "Version": "2012-10-17",
@@ -35,7 +35,7 @@ resource "aws_iam_policy" "s3_access_policy" {
 #######################
 
 resource "aws_iam_policy" "dynamodb_access_policy" {
-  name        = "${var.owner}-dynamodb-policy-${var.env}-${var.project}"
+  name        = "${var.owner}-dynamodb-policy-${var.env}-${var.region}-${var.project}"
   description = "Policy for DynamoDB access"
 
   policy = jsonencode({
@@ -69,7 +69,7 @@ resource "aws_iam_policy" "dynamodb_access_policy" {
 ##############################
 
 resource "aws_iam_policy" "sqs_access_policy" {
-  name        = "${var.owner}-sqs_policy-${var.env}-${var.project}"
+  name        = "${var.owner}-sqs_policy-${var.env}-${var.region}-${var.project}"
   description = "Policy for SQS access"
 
   policy = jsonencode({
@@ -97,7 +97,7 @@ resource "aws_iam_policy" "sqs_access_policy" {
 #############################
 
 resource "aws_iam_policy" "secrets_manager_access_policy" {
-  name        = "${var.owner}-sm-policy-${var.env}-${var.project}"
+  name        = "${var.owner}-sm-policy-${var.env}-${var.region}-${var.project}"
   description = "Policy for Secrets Manager access"
 
   policy = jsonencode({
@@ -120,7 +120,7 @@ resource "aws_iam_policy" "secrets_manager_access_policy" {
 ####################################
 
 resource "aws_iam_policy" "kms_access_policy" {
-  name        = "${var.owner}-kms-policy-${var.env}-${var.project}"
+  name        = "${var.owner}-kms-policy-${var.env}-${var.region}-${var.project}"
   description = "Policy for KMS access"
 
   policy = jsonencode({
@@ -142,7 +142,7 @@ resource "aws_iam_policy" "kms_access_policy" {
 ######################
 
 resource "aws_iam_policy" "route53_policy" {
-  name        = "${var.owner}-route53-policy-${var.env}-${var.project}"
+  name        = "${var.owner}-route53-policy-${var.env}-${var.region}-${var.project}"
   description = "Policy to allow creating and managing Route 53 subdomains"
 
   policy = jsonencode({

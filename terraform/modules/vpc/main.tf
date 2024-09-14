@@ -5,7 +5,7 @@ resource "aws_vpc" "main-vpc" {
   cidr_block = var.main_vpc_cidr
 
   tags = {
-    Name      = "${var.owner}-vpc-${var.env}-${var.project}"
+    Name      = "${var.owner}-vpc-${var.env}-${var.region}-${var.project}"
     Terraform = "true"
   }
 }
@@ -20,7 +20,7 @@ resource "aws_subnet" "public_subnet_1" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name      = "${var.owner}-public-subnet-1-${var.env}-${var.project}"
+    Name      = "${var.owner}-public-subnet-1-${var.env}-${var.region}-${var.project}"
     Terraform = "true"
   }
 }
@@ -32,7 +32,7 @@ resource "aws_subnet" "public_subnet_2" {
     map_public_ip_on_launch = true
 
   tags = {
-    Name      = "${var.owner}-public-subnet-2-${var.env}-${var.project}"
+    Name      = "${var.owner}-public-subnet-2-${var.env}-${var.region}-${var.project}"
     Terraform = "true"
   }
 }
@@ -44,7 +44,7 @@ resource "aws_internet_gateway" "main-igw" {
   vpc_id = aws_vpc.main-vpc.id
 
   tags = {
-    Name      = "${var.owner}-igw-${var.env}-${var.project}"
+    Name      = "${var.owner}-igw-${var.env}-${var.region}-${var.project}"
     Terraform = "true"
   }
 }
@@ -61,7 +61,7 @@ resource "aws_route_table" "public-rt" {
   }
 
   tags = {
-    Name      = "${var.owner}-public-route-table-${var.env}-${var.project}"
+    Name      = "${var.owner}-public-route-table-${var.env}-${var.region}-${var.project}"
     Terraform = "true"
   }
 }
@@ -73,7 +73,7 @@ resource "aws_network_acl" "public_network_acl" {
   vpc_id = aws_vpc.main-vpc.id
 
   tags = {
-    Name = "${var.owner}-network-acl-${var.env}-${var.project}"
+    Name = "${var.owner}-network-acl-${var.env}-${var.region}-${var.project}"
   }
 }
 

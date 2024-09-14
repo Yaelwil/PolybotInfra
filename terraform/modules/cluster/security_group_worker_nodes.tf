@@ -2,7 +2,7 @@
 # Security group for Worker Node EC2 instances #
 ################################################
 resource "aws_security_group" "worker_node_sg" {
-  name = "${var.owner_name}-worker-nodes-sg-${var.env}-${var.project_name}"
+  name = "${var.owner_name}-worker-nodes-sg-${var.env}-${var.region}}-${var.project_name}"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -78,7 +78,7 @@ resource "aws_security_group" "worker_node_sg" {
   }
 
   tags = {
-    Name      = "${var.owner_name}-worker-nodes-sg-${var.env}-${var.project_name}"
+    Name      = "${var.owner_name}-worker-nodes-sg-${var.env}-${var.region}-${var.project_name}"
     Terraform = "true"
   }
 }
