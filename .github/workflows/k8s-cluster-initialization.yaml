@@ -10,8 +10,6 @@ on:
         required: true
         type: string
     secrets:
-      TELEGRAM_TOKEN:
-        required: true
       AWS_ACCESS_KEY:
         required: true
       AWS_SECRET_ACCESS_KEY:

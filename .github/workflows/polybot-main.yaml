@@ -113,7 +113,6 @@ jobs:
     secrets:
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
 
   Initialize_Cluster_us_east_2:
     if: ${{ github.event.inputs.Initialize_Cluster_us_east_2 == 'true' }}
@@ -122,6 +121,7 @@ jobs:
       region-code: us-east-2
       environment: prod
     secrets:
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_US_EAST_2_K8S }}
