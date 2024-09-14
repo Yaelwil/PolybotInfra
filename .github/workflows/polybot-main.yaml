@@ -24,7 +24,7 @@ on:
         required: false
         type: boolean
       Destroy_Production_us_east_2:
-        description: 'Destroy Production (us_east_2)'
+        description: 'Destroy Production (us-east-2)'
         required: false
         type: boolean
 
