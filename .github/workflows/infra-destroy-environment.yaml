@@ -29,7 +29,7 @@ jobs:
         with:
           terraform_version: 1.2.0
 
-      - name: Infrastructure destroying
+      - name: Infrastructure destroy
         working-directory: terraform
         run: |
           # init terraform 
