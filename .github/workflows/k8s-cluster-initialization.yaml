@@ -10,6 +10,8 @@ on:
         required: true
         type: string
     secrets:
+      TELEGRAM_TOKEN:
+        required: true
       AWS_ACCESS_KEY:
         required: true
       AWS_SECRET_ACCESS_KEY:
@@ -39,33 +41,40 @@ jobs:
           chmod +x k8s_initializer.sh
           ./k8s_initializer.sh
 
-      - name: Get the control plane ip
+      - name: Copy k8s file
         run: |
-          EC2_CONTROL_PLANE=$(aws ec2 describe-instances --region ${{ inputs.region-code }} \
-              --filters "Name=tag:Name,Values=*control-plane*" \
-                        "Name=tag:Name,Values=*yaelwil*" \
-                        "Name=tag:Name,Values=*${{ inputs.environment }}*" \
-                        "Name=tag:Name,Values=*k8s-project*" \
-              --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
-              --output json)
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > yaelwil-private-key.pem
+          chmod 400 yaelwil-private-key.pem
           
-          # Extract Control Plane IPs
-          CONTROL_PLANE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[2]')
-          
-          echo "CONTROL_PLANE_IP: $CONTROL_PLANE_IP"
-          echo "CONTROL_PLANE_IP=$CONTROL_PLANE_IP" >> $GITHUB_ENV
+          # Ensure the namespace exists
+          ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP \
+          "kubectl create namespace ${{ inputs.environment }} --dry-run=client -o yaml | kubectl apply -f -"
 
-      - name: Debug Control Plane IP
-        run: |
-          echo "Control Plane IP: $CONTROL_PLANE_IP"
+          # Generate the ConfigMap YAML file
+          cat <<EOF > configmap.yaml
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: polybot-config
+          data:
+            TELEGRAM_APP_URL: "https://yaelwil.int-devops.click"
+            ALB_URL: "http://yaelwil.int-devops.click:80"
+            REGION: "${{ inputs.region-code }}"
+            BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
+            DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
+            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
+          EOF
+
+          # Securely copy files to the remote server
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/k8s
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/FiltersMicroservice
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/PolybotMicroservice
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/YoloMicroservice
+
+          # Clean up the private key
+          rm yaelwil-private-key.pem
         env:
-          CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
-
-
-      - name: Copy and run k8s files
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > yaelwil-ohio.pem
-          chmod 400 yaelwil-ohio.pem
-          scp -i "yaelwil-ohio.pem" -r k8s ubuntu@$CONTROL_PLANE_IP:~/
-        env:
-          CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
+          CONTROL_PLANE_IP: ${{ secrets.CONTROL_PLANE_IP }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
