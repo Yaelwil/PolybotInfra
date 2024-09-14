@@ -23,8 +23,8 @@ on:
         description: 'Destroy Production (eu-west-1)'
         required: false
         type: boolean
-      Destroy_Development_us_east_2:
-        description: 'Destroy Development (us_east_2)'
+      Destroy_Production_us_east_2:
+        description: 'Destroy Production (us_east_2)'
         required: false
         type: boolean
 
