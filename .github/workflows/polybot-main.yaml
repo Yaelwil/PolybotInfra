@@ -11,10 +11,6 @@ on:
         description: 'Build Production (eu-west-1)'
         required: false
         type: boolean
-      Build_Development_us_east_2:
-        description: 'Build Development (us-east-2)'
-        required: false
-        type: boolean
 #      Initialize_cluster_Development:
 #        description: 'Initialize cluster Development (eu-west-1)'
 #        required: false
@@ -31,12 +27,6 @@ on:
         description: 'Destroy Production (eu-west-1)'
         required: false
         type: boolean
-
-      Destroy_Development_us_east_2:
-        description: 'Destroy Development (us-east-2)'
-        required: false
-        type: boolean
-
 
 jobs:
   Build_Development_eu_west_1:
@@ -63,18 +53,6 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
 
-  Build_Development_us_east_2:
-    if: ${{ github.event.inputs.Build_Development_us_east_2 == 'true' }}
-    uses: ./.github/workflows/infra-provisioning-environment.yaml
-    with:
-      region-code: us-east-2
-      environment: dev
-    secrets:
-      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
-      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
-
   Destroy_Development_eu_west_1:
     if: ${{ github.event.inputs.Destroy_Development_eu_west_1 == 'true' }}
     uses: ./.github/workflows/infra-destroy-environment.yaml
@@ -91,16 +69,6 @@ jobs:
     with:
       region-code: eu-west-1
       environment: prod
-    secrets:
-      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-  Destroy_Development_us_east_2:
-    if: ${{ github.event.inputs.Destroy_Development_us_east_2 == 'true' }}
-    uses: ./.github/workflows/infra-destroy-environment.yaml
-    with:
-      region-code: us-east-2
-      environment: dev
     secrets:
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

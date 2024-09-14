@@ -109,8 +109,12 @@ jobs:
 
       - name: Copy k8s file
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > yaelwil-ohio.pem
-          chmod 400 yaelwil-ohio.pem
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > yaelwil-private-key.pem
+          chmod 400 yaelwil-private-key.pem
+          
+          # Ensure the namespace exists
+          ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP \
+          "kubectl create namespace ${{ inputs.environment }} --dry-run=client -o yaml | kubectl apply -f -"
 
           # Generate the ConfigMap YAML file
           cat <<EOF > configmap.yaml
@@ -118,7 +122,7 @@ jobs:
           kind: ConfigMap
           metadata:
             name: polybot-config
-            namespace: default  # or specify the namespace you are using
+            namespace: ${{ inputs.environment }}  # or specify the namespace you are using
           data:
             TELEGRAM_APP_URL: "https://yaelwil.int-devops.click"
             ALB_URL: "http://yaelwil.int-devops.click:80"
@@ -127,17 +131,17 @@ jobs:
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
             FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
-            TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}
+            TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
           EOF
 
           # Securely copy files to the remote server
-          scp -o StrictHostKeyChecking=no -i "yaelwil-ohio.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/
-          scp -o StrictHostKeyChecking=no -i "yaelwil-ohio.pem" configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/FiltersMicroservice
-          scp -o StrictHostKeyChecking=no -i "yaelwil-ohio.pem" configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/PolybotMicroservice
-          scp -o StrictHostKeyChecking=no -i "yaelwil-ohio.pem" configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/YoloMicroservice
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/FiltersMicroservice
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/PolybotMicroservice
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/YoloMicroservice
 
           # Clean up the private key
-          rm yaelwil-ohio.pem
+          rm yaelwil-private-key.pem
         env:
           CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}

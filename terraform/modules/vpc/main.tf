@@ -100,7 +100,7 @@ resource "aws_network_acl_rule" "allow_all_inbound" {
 resource "aws_network_acl_rule" "allow_all_outbound" {
   network_acl_id = aws_network_acl.public_network_acl.id
   rule_number    = 100
-  protocol       = "tcp"
+  protocol       = -1
   rule_action    = "allow"
   egress         = true
   cidr_block     = "0.0.0.0/0"
