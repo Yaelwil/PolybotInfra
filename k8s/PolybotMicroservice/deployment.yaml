@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: polybot
-        image: yaeli1/polybot-microservice-dev:0.0.7
+        image: yaeli1/polybot-microservice-dev:0.0.8
         ports:
         - containerPort: 8443
         env:
