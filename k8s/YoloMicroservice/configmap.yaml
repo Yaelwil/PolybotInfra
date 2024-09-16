@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: polybot-config
+  name: yolo-config
   namespace: default  # or specify the namespace you are using
 data:
   TELEGRAM_APP_URL: "https://yaelwil.int-devops.click"

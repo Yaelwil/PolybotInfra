@@ -257,6 +257,6 @@ EOF
 if [ $? -eq 0 ]; then
   echo -e "${GREEN}K8S dashboard, ArgoCD and Nginx ingress controller were installed${NC}"
 else
-  echo -e "${RED}K8S dashboard, ArgoCD and Nginx ingress controller weren't installed${NC}"
+  echo -e "${RED}K8S dashboard, ArgoCD and Nginx ingress controllerv weren't installed${NC}"
   exit 1
 fi
