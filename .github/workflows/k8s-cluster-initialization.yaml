@@ -95,6 +95,7 @@ jobs:
             YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
             FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
             TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
+            CERT_PREFIX: "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
           EOF
 
           # Securely copy files to the remote server
