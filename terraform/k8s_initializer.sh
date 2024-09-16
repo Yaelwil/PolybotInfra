@@ -277,11 +277,14 @@ ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP"
 #  curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.5.0/argocd-linux-amd64
 #  chmod +x /usr/local/bin/argocd
 #  argocd version
+
+  # Install Nginx ingress controller
+  kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/aws/deploy.yaml
 EOF
 
 if [ $? -eq 0 ]; then
-  echo -e "${GREEN}K8S dashboard and ArgoCD were installed${NC}"
+  echo -e "${GREEN}K8S dashboard, ArgoCD and Nginx ingress controller were installed${NC}"
 else
-  echo -e "${RED}K8S dashboard and ArgoCD CLI weren't installed${NC}"
+  echo -e "${RED}K8S dashboard, ArgoCD and Nginx ingress controller weren't installed${NC}"
   exit 1
 fi

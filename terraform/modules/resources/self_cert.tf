@@ -1,15 +1,12 @@
-# Configure the TLS provider
 provider "tls" {
   version = "~> 3.1"
 }
 
-# Generate a private key
 resource "tls_private_key" "example" {
   algorithm = "RSA"
   rsa_bits  = 2048
 }
 
-# Create a self-signed certificate
 resource "tls_self_signed_cert" "example" {
   private_key_pem = tls_private_key.example.private_key_pem
 
@@ -32,11 +29,10 @@ resource "tls_self_signed_cert" "example" {
   ]
 }
 
-# # Output the certificate and private key
-# output "certificate_pem" {
-#   value = tls_self_signed_cert.example.cert_pem
-# }
-#
-# output "private_key_pem" {
-#   value = tls_private_key.example.private_key_pem
-# }
+resource "aws_acm_certificate" "example" {
+  private_key       = tls_private_key.example.private_key_pem
+  certificate_body  = tls_self_signed_cert.example.cert_pem
+  tags = {
+    Name = "${var.owner}-self-sign-certificate-${var.env}-${var.region}-${var.project}"
+  }
+}
