@@ -63,13 +63,13 @@ jobs:
           WORKER_NODE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[0]')
           echo "INSTANCE_WN_IDS=$WORKER_NODE_IP" >> $GITHUB_ENV
 
-      - name: Cluster Initialization
-        run: |
-          export REGION=${{ inputs.region-code }}
-          export ENV=${{ inputs.environment }}
-          export SSH_PRIVATE_KEY="${{ secrets.SSH_PRIVATE_KEY }}"
-          chmod +x k8s_initializer.sh
-          ./k8s_initializer.sh
+#      - name: Cluster Initialization
+#        run: |
+#          export REGION=${{ inputs.region-code }}
+#          export ENV=${{ inputs.environment }}
+#          export SSH_PRIVATE_KEY="${{ secrets.SSH_PRIVATE_KEY }}"
+#          chmod +x k8s_initializer.sh
+#          ./k8s_initializer.sh
 
       - name: Copy k8s file
         run: |
