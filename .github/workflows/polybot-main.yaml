@@ -58,7 +58,7 @@ jobs:
     if: ${{ github.event.inputs.Destroy_Development_us_east_2 == 'true' }}
     uses: ./.github/workflows/infra-destroy-environment.yaml
     with:
-      region-code: us_east_2
+      region-code: us-east-2
       environment: dev
     secrets:
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
