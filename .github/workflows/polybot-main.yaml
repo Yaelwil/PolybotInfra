@@ -23,6 +23,10 @@ on:
         description: 'Initialize Cluster Prod (us-east-2)'
         required: false
         type: boolean
+      Initialize_Cluster_Dev_us_east_2:
+        description: 'Initialize Cluster Dev (us-east-2)'
+        required: false
+        type: boolean
       Destroy_Development_eu_west_1:
         description: 'Destroy Development (eu-west-1)'
         required: false
@@ -116,12 +120,24 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
 
-  Initialize_Cluster_us_east_2:
+  Initialize_Cluster_Prod_us_east_2:
     if: ${{ github.event.inputs.Initialize_Cluster_Prod_us_east_2 == 'true' }}
     uses: ./.github/workflows/k8s-cluster-initialization.yaml
     with:
       region-code: us-east-2
       environment: prod
+    secrets:
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_US_EAST_2_K8S }}
+
+  Initialize_Cluster_Dev_us_east_2:
+    if: ${{ github.event.inputs.Initialize_Cluster_Dev_us_east_2 == 'true' }}
+    uses: ./.github/workflows/k8s-cluster-initialization.yaml
+    with:
+      region-code: us-east-2
+      environment: dev
     secrets:
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
