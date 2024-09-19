@@ -64,9 +64,9 @@ resource "aws_iam_policy" "dynamodb_access_policy" {
 }
 
 
-##############################
-# Access to Yolov5 SQS queue #
-##############################
+#######################
+# Access to SQS queue #
+#######################
 
 resource "aws_iam_policy" "sqs_access_policy" {
   name        = "${var.owner}-sqs_policy-${var.env}-${var.region}-${var.project}"

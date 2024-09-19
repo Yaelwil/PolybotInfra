@@ -78,10 +78,10 @@ jobs:
           
           # Ensure the namespace exists
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP \
-          "kubectl create namespace ${{ inputs.environment }} --dry-run=client -o yaml | kubectl apply -f -"
+          "kubectl create namespace ${{ inputs.environment }}" || echo 'Namespace already exists'"
 
           # Generate the ConfigMap YAML file
-          cat <<EOF > configmap.yaml
+          cat <<EOF > polybot-configmap.yaml
           apiVersion: v1
           kind: ConfigMap
           metadata:
@@ -97,12 +97,44 @@ jobs:
             TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
             CERT_PREFIX: "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
           EOF
+          
+          # Generate the ConfigMap YAML file
+          cat <<EOF > filters-configmap.yaml
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: filters-config
+          data:
+            TELEGRAM_APP_URL: "https://yaelwil.int-devops.click"
+            ALB_URL: "http://yaelwil.int-devops.click:80"
+            REGION: "${{ inputs.region-code }}"
+            BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
+            DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
+            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+          EOF
+          
+          # Generate the ConfigMap YAML file
+          cat <<EOF > yolo-configmap.yaml
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: yolo-config
+          data:
+            TELEGRAM_APP_URL: "https://yaelwil.int-devops.click"
+            ALB_URL: "http://yaelwil.int-devops.click:80"
+            REGION: "${{ inputs.region-code }}"
+            BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
+            DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
+            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+          EOF 
 
           # Securely copy files to the remote server
           scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/k8s
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/FiltersMicroservice
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/PolybotMicroservice
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/YoloMicroservice
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" filters-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/FiltersMicroservice
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" polybot-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/PolybotMicroservice
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" yolo-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/YoloMicroservice
 
           # Clean up the private key
           rm yaelwil-private-key.pem

@@ -3,36 +3,26 @@ name: Polybot Main
 on:
   workflow_dispatch:
     inputs:
-      Build_Development_eu_west_1:
-        description: 'Build Development (eu-west-1)'
-        required: false
-        type: boolean
-      Build_Production_eu_west_1:
-        description: 'Build Production (eu-west-1)'
+      Build_Development_us_east_2:
+        description: 'Build Development (us_east_2)'
         required: false
         type: boolean
       Build_Production_us_east_2:
         description: 'Build Production (us-east-2)'
         required: false
         type: boolean
-      Initialize_Cluster_Prod_eu_west_1:
-        description: 'Initialize Cluster Prod (eu-west-1)'
-        required: false
-        type: boolean
-      Initialize_Cluster_Prod_us_east_2:
-        description: 'Initialize Cluster Prod (us-east-2)'
-        required: false
-        type: boolean
-      Initialize_Cluster_Dev_us_east_2:
+
+      Copy_Files_Dev_us_east_2:
         description: 'Initialize Cluster Dev (us-east-2)'
         required: false
         type: boolean
-      Destroy_Development_eu_west_1:
-        description: 'Destroy Development (eu-west-1)'
+      Copy_Files_Prod_us_east_2:
+        description: 'Initialize Cluster Prod (us-east-2)'
         required: false
         type: boolean
-      Destroy_Production_eu_west_1:
-        description: 'Destroy Production (eu-west-1)'
+
+      Destroy_Development_us_east_2:
+        description: 'Destroy Development (us_east_2)'
         required: false
         type: boolean
       Destroy_Production_us_east_2:
@@ -42,29 +32,16 @@ on:
 
 jobs:
   Build_Development_eu_west_1:
-    if: ${{ github.event.inputs.Build_Development_eu_west_1 == 'true' }}
+    if: ${{ github.event.inputs.Build_Development_us_east_2 == 'true' }}
     uses: ./.github/workflows/infra-provisioning-environment.yaml
     with:
-      region-code: eu-west-1
+      region-code: us_east_2
       environment: dev
     secrets:
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_DEV }}
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
-
-  Build_Production_eu_west_1:
-    if: ${{ github.event.inputs.Build_Production_eu_west_1 == 'true' }}
-    uses: ./.github/workflows/infra-provisioning-environment.yaml
-    with:
-      region-code: eu-west-1
-      environment: prod
-    secrets:
-      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
-      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
-
   Build_Production_us_east_2:
     if: ${{ github.event.inputs.Build_Production_us_east_2 == 'true' }}
     uses: ./.github/workflows/infra-provisioning-environment.yaml
@@ -77,27 +54,15 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_US_EAST_2_K8S }}
 
-
-  Destroy_Development_eu_west_1:
-    if: ${{ github.event.inputs.Destroy_Development_eu_west_1 == 'true' }}
+  Destroy_Development_us_east_2:
+    if: ${{ github.event.inputs.Destroy_Development_us_east_2 == 'true' }}
     uses: ./.github/workflows/infra-destroy-environment.yaml
     with:
-      region-code: eu-west-1
+      region-code: us_east_2
       environment: dev
     secrets:
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-  Destroy_Production_eu_west_1:
-    if: ${{ github.event.inputs.Destroy_Production_eu_west_1 == 'true' }}
-    uses: ./.github/workflows/infra-destroy-environment.yaml
-    with:
-      region-code: eu-west-1
-      environment: prod
-    secrets:
-      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
   Destroy_Production_us_east_2:
     if: ${{ github.event.inputs.Destroy_Production_us_east_2 == 'true' }}
     uses: ./.github/workflows/infra-destroy-environment.yaml
@@ -108,36 +73,24 @@ jobs:
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       
-  Initialize_Cluster_eu_west_1:
-    if: ${{ github.event.inputs.Initialize_Cluster_Prod_eu_west_1 == 'true' }}
-    uses: ./.github/workflows/k8s-cluster-initialization.yaml
-    with:
-      region-code: eu-west-1
-      environment: prod
-    secrets:
-      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
-      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
-
-  Initialize_Cluster_Prod_us_east_2:
-    if: ${{ github.event.inputs.Initialize_Cluster_Prod_us_east_2 == 'true' }}
+  Copy_Files_Dev_us_east_2:
+    if: ${{ github.event.inputs.Copy_Files_Dev_us_east_2 == 'true' }}
     uses: ./.github/workflows/k8s-cluster-initialization.yaml
     with:
       region-code: us-east-2
-      environment: prod
+      environment: dev
     secrets:
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_US_EAST_2_K8S }}
 
-  Initialize_Cluster_Dev_us_east_2:
-    if: ${{ github.event.inputs.Initialize_Cluster_Dev_us_east_2 == 'true' }}
+  Copy_Files_Prod_us_east_2:
+    if: ${{ github.event.inputs.Copy_Files_Prod_us_east_2 == 'true' }}
     uses: ./.github/workflows/k8s-cluster-initialization.yaml
     with:
       region-code: us-east-2
-      environment: dev
+      environment: prod
     secrets:
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
