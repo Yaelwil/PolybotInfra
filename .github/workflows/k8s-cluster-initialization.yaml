@@ -107,5 +107,5 @@ jobs:
           # Clean up the private key
           rm yaelwil-private-key.pem
         env:
-          CONTROL_PLANE_IP: ${{ secrets.CONTROL_PLANE_IP }}
+          CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
