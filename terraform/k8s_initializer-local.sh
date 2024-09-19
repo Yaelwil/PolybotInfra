@@ -112,7 +112,7 @@ fi
 
 ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
     # Create .kube directory
-    mkdir -p $HOME/.kube
+    sudo mkdir -p $HOME/.kube
 
     # Copy the Kubernetes admin configuration file
     sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
