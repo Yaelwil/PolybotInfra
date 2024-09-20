@@ -40,8 +40,10 @@ jobs:
       environment: dev
       app-url: yaelwil-dev.int-devops.click
     secrets:
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_DEV }}
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_US_EAST_2_K8S }}
 
   Build_Production_us_east_2:
     if: ${{ github.event.inputs.Build_Production_us_east_2 == 'true' }}
