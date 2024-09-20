@@ -107,7 +107,7 @@ COMMAND_TO_JOIN=$(grep -A 2 "kubeadm join" kubeadm-init-output.txt)
 
 # Check if the command was found and display it
 if [ -n "$COMMAND_TO_JOIN" ]; then
-  echo -e "${GREEN}COMMAND_TO_JOIN: $COMMAND_TO_JOIN${NC}"
+  echo -e "COMMAND_TO_JOIN: ${GREEN}$COMMAND_TO_JOIN${NC}"
 else
   echo -e "${RED}Didn't get command to join.${NC}"
   exit 1
