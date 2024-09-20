@@ -9,6 +9,9 @@ on:
       environment:
         required: true
         type: string
+      app-url:
+        required: true
+        type: string
     secrets:
       TELEGRAM_TOKEN:
         required: true
@@ -86,9 +89,10 @@ jobs:
           kind: ConfigMap
           metadata:
             name: polybot-config
+            namespace: ${{ inputs.environment }}
           data:
-            TELEGRAM_APP_URL: "https://yaelwil.int-devops.click"
-            ALB_URL: "http://yaelwil.int-devops.click:80"
+            TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
+            ALB_URL: "http://${{ inputs.app-url }}:80"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
@@ -104,9 +108,10 @@ jobs:
           kind: ConfigMap
           metadata:
             name: filters-config
+            namespace: ${{ inputs.environment }}
           data:
-            TELEGRAM_APP_URL: "https://yaelwil.int-devops.click"
-            ALB_URL: "http://yaelwil.int-devops.click:80"
+            TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
+            ALB_URL: "http://${{ inputs.app-url }}:80"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
@@ -120,9 +125,10 @@ jobs:
           kind: ConfigMap
           metadata:
             name: yolo-config
+            namespace: ${{ inputs.environment }}
           data:
-            TELEGRAM_APP_URL: "https://yaelwil.int-devops.click"
-            ALB_URL: "http://yaelwil.int-devops.click:80"
+            TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
+            ALB_URL: "http://${{ inputs.app-url }}:80"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
