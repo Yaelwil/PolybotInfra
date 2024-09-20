@@ -9,9 +9,6 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 unzip awscliv2.zip
 sudo ./aws/install
 
-# install Helm
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-
 # sysctl params required by setup, params persist across reboots
 cat <<EOF | tee /etc/sysctl.d/k8s.conf
 net.ipv4.ip_forward = 1
