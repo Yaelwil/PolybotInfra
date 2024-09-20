@@ -9,6 +9,9 @@ on:
       environment:
         required: true
         type: string
+      app-url:
+        required: true
+        type: string
     secrets:
       TELEGRAM_TOKEN:
         required: true
@@ -99,3 +102,87 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+      - name: Cluster Initialization
+        run: |
+          export REGION=${{ inputs.region-code }}
+          export ENV=${{ inputs.environment }}
+          export SSH_PRIVATE_KEY="${{ secrets.SSH_PRIVATE_KEY }}"
+          chmod +x k8s_initializer.sh
+          ./k8s_initializer.sh
+
+      - name: Copy k8s file
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > yaelwil-private-key.pem
+          chmod 400 yaelwil-private-key.pem
+          
+          # Ensure the namespace exists
+          ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP \
+          "kubectl create namespace ${{ inputs.environment }}" || echo 'Namespace already exists'"
+
+          cat <<EOF > polybot-configmap.yaml
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: polybot-config
+            namespace: ${{ inputs.environment }}
+          data:
+            TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
+            ALB_URL: "http://${{ inputs.app-url }}:80"
+            REGION: "${{ inputs.region-code }}"
+            BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
+            DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
+            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
+            CERT_PREFIX: "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
+          EOF
+          
+          # Generate the ConfigMap YAML file
+          cat <<EOF > filters-configmap.yaml
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: filters-config
+            namespace: ${{ inputs.environment }}
+          data:
+            TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
+            ALB_URL: "http://${{ inputs.app-url }}:80"
+            REGION: "${{ inputs.region-code }}"
+            BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
+            DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
+            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
+            CERT_PREFIX: "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
+          EOF
+          
+          # Generate the ConfigMap YAML file
+          cat <<EOF > yolo-configmap.yaml
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: yolo-config
+            namespace: ${{ inputs.environment }}
+          data:
+            TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
+            ALB_URL: "http://${{ inputs.app-url }}:80"
+            REGION: "${{ inputs.region-code }}"
+            BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
+            DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
+            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
+            CERT_PREFIX: "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
+          EOF
+
+          # Securely copy files to the remote server
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/k8s
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" filters-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/FiltersMicroservice
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" polybot-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/PolybotMicroservice
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" yolo-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/YoloMicroservice
+
+          # Clean up the private key
+          rm yaelwil-private-key.pem
+        env:
+          CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}

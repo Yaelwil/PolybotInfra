@@ -25,7 +25,7 @@ jobs:
 
   Build_Development_us_east_2:
     if: ${{ github.event.inputs.Build_Development_us_east_2 == 'true' }}
-    uses: ./.github/workflows/k8s-cluster-initialization.yaml
+    uses: ./.github/workflows/infra-provisioning-environment.yaml
     with:
       region-code: us-east-2
       environment: dev
