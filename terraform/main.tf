@@ -28,7 +28,7 @@ module "resources" {
   polybot_port = var.polybot_port
   public_subnet_1_id = "subnet-0ff6b74a9f01f4f2d"
   public_subnet_2_id = "subnet-005569cab5dbde989"
-  instance_ids = ["i-0f9c298620c98dbd6", "i-067a5db17f3f963ae"]
+  instance_ids = ["i-0d0cdba87b81147c7", "i-08d14a551fcff0ab0"]
   region = var.region
   env = var.env
   domain_name = var.domain_name

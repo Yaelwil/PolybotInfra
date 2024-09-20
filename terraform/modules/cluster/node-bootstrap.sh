@@ -1,5 +1,7 @@
 #!/bin/bash
 
+k8s_version="v1.30"
+
 # install jq, awscli and ecr-credentials-helper (for those who store images in ECR)
 apt-get update
 apt-get install jq unzip -y
@@ -10,12 +12,12 @@ unzip awscliv2.zip
 sudo ./aws/install
 
 # sysctl params required by setup, params persist across reboots
-cat <<EOF | tee /etc/sysctl.d/k8s.conf
+sudo bash -c 'cat <<EOF | tee /etc/sysctl.d/k8s.conf
 net.ipv4.ip_forward = 1
 EOF
 
 # apply sysctl params without reboot
-sysctl --system
+sysctl --system'
 
 # install cri-o kubelet kubeadm kubectl
 KUBERNETES_VERSION=${k8s_version}
