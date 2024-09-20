@@ -12,6 +12,12 @@ on:
         required: false
         type: boolean
 
+    Copy_files_Development_us_east_2:
+      description: 'Copy files Development (us-east-2)'
+      required: false
+      type: boolean
+
+
       Destroy_Development_us_east_2:
         description: 'Destroy Development (us_east_2)'
         required: false
@@ -43,6 +49,19 @@ jobs:
       region-code: us-east-2
       environment: prod
       app-url: yaelwil.int-devops.click
+    secrets:
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_US_EAST_2_K8S }}
+
+  Copy_files_Development_us_east_2:
+    if: ${{ github.event.inputs.Copy_files_Development_us_east_2 == 'true' }}
+    uses: ./.github/workflows/k8s-cluster-initialization.yaml
+    with:
+      region-code: us-east-2
+      environment: dev
+      app-url: yaelwil-dev.int-devops.click
     secrets:
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
