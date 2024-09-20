@@ -23,37 +23,37 @@ spec:
         - name: TELEGRAM_APP_URL
           valueFrom:
             configMapKeyRef:
-              name: polybot-config
+              name: yolo-config
               key: TELEGRAM_APP_URL
         - name: ALB_URL
           valueFrom:
             configMapKeyRef:
-              name: polybot-config
+              name: yolo-config
               key: ALB_URL
         - name: REGION
           valueFrom:
             configMapKeyRef:
-              name: polybot-config
+              name: yolo-config
               key: REGION
         - name: BUCKET_NAME
           valueFrom:
             configMapKeyRef:
-              name: polybot-config
+              name: yolo-config
               key: BUCKET_NAME
         - name: DYNAMODB_TABLE_NAME
           valueFrom:
             configMapKeyRef:
-              name: polybot-config
+              name: yolo-config
               key: DYNAMODB_TABLE_NAME
         - name: YOLO_QUEUE_NAME
           valueFrom:
             configMapKeyRef:
-              name: polybot-config
+              name: yolo-config
               key: YOLO_QUEUE_NAME
         - name: FILTERS_QUEUE_NAME
           valueFrom:
             configMapKeyRef:
-              name: polybot-config
+              name: yolo-config
               key: FILTERS_QUEUE_NAME
 ---
 apiVersion: v1
