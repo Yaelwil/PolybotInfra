@@ -86,8 +86,10 @@ jobs:
               --output json)
           
           # Extract Worker Nodes IPs
-          WORKER_NODE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[0]')
-          echo "INSTANCE_WN_IDS=$WORKER_NODE_IP" >> $GITHUB_ENV
+          WORKER_NODE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[2]')
+          WORKER_NODE_ID=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[0]')
+          echo "INSTANCE_WN_IPS=$WORKER_NODE_IP" >> $GITHUB_ENV
+          echo "INSTANCE_WN_IDS=$WORKER_NODE_ID" >> $GITHUB_ENV
 
       - name: Wait for Control Plane and Worker Node Instances Status
         run: |
@@ -102,7 +104,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           INSTANCE_CP_ID: ${{ env.INSTANCE_CP_ID }}
-          INSTANCE_WN_IDS: ${{ env.WORKER_NODE_IP }}
+          INSTANCE_WN_IDS: ${{ env.WORKER_NODE_ID }}
 
       - name: Cluster Initialization
         run: |
