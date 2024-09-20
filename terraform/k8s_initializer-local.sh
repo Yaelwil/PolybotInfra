@@ -15,6 +15,7 @@ REMOTE_CLUSTER_CONFIG_PATH="~/cluster-configs.yaml"
 EBS_CSI_VALUES_DIRECTORY="~/"
 EBS_CSI_VALUES_PATH="~/ebs-csi-values.yaml"
 REGION="us-east-2"
+ENV="dev"
 
 ##########################
 # Fetch Control Plane IP #
@@ -22,7 +23,10 @@ REGION="us-east-2"
 
 EC2_CONTROL_PLANE=$(aws ec2 describe-instances \
   --region $REGION \
-  --filters "Name=tag:Name,Values=*control-plane*" "Name=tag:Name,Values=*yaelwil*" "Name=tag:Name,Values=*k8s-project*" \
+  --filters "Name=tag:Name,Values=*control-plane*" \
+            "Name=tag:Name,Values=*yaelwil*" \
+            "Name=tag:Name,Values=*$ENV*" \
+            "Name=tag:Name,Values=*k8s-project*" \
   --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
   --output json)
 
@@ -44,7 +48,10 @@ echo -e "${GREEN}Control Plane IP(s):${NC} $CONTROL_PLANE_IPS"
 
 EC2_WORKER_NODES=$(aws ec2 describe-instances \
   --region $REGION \
-  --filters "Name=tag:Name,Values=*worker-node*" "Name=tag:Name,Values=*yaelwil*" "Name=tag:Name,Values=*k8s-project*" \
+  --filters "Name=tag:Name,Values=*worker-node*" \
+            "Name=tag:Name,Values=*yaelwil*" \
+            "Name=tag:Name,Values=*$ENV*" \
+            "Name=tag:Name,Values=*k8s-project*" \
   --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
   --output json)
 
