@@ -83,6 +83,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP \
           "kubectl create namespace ${{ inputs.environment }}" || echo 'Namespace already exists'
 
+          # Generate the ConfigMap YAML file
           cat <<EOF > polybot-configmap.yaml
           apiVersion: v1
           kind: ConfigMap
@@ -100,6 +101,7 @@ jobs:
             TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
             CERT_PREFIX: "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
           EOF
+
           
           # Generate the ConfigMap YAML file
           cat <<EOF > filters-configmap.yaml
