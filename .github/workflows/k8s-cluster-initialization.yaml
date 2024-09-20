@@ -152,3 +152,12 @@ jobs:
         env:
           CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+
+      - name: run the pods
+        run: |
+          kubectl apply -f ./k8s/PolybotMicroservice/polybot-configmap.yaml
+          kubectl apply -f ./k8s/FiltersMicroservice/filters-configmap.yaml
+          kubectl apply -f ./k8s/YoloMicroservice/yolo-configmap.yaml
+          kubectl apply -f ./k8s/PolybotMicroservice/deployment -n ${{ inputs.environment }}
+          kubectl apply -f ./k8s/FiltersMicroservice/deployment -n ${{ inputs.environment }}
+          kubectl apply -f ./k8s/YoloMicroservice/deployment -n ${{ inputs.environment }}
