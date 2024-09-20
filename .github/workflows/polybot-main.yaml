@@ -12,10 +12,10 @@ on:
         required: false
         type: boolean
 
-    Copy_files_Development_us_east_2:
-      description: 'Copy files Development (us-east-2)'
-      required: false
-      type: boolean
+      Copy_files_Development_us_east_2:
+        description: 'Copy files Development (us-east-2)'
+        required: false
+        type: boolean
 
 
       Destroy_Development_us_east_2:
