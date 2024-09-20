@@ -12,14 +12,14 @@ on:
         required: false
         type: boolean
 
-      Copy_Files_Dev_us_east_2:
-        description: 'Initialize Cluster Dev (us-east-2)'
-        required: false
-        type: boolean
-      Copy_Files_Prod_us_east_2:
-        description: 'Initialize Cluster Prod (us-east-2)'
-        required: false
-        type: boolean
+#      Copy_Files_Dev_us_east_2:
+#        description: 'Initialize Cluster Dev (us-east-2)'
+#        required: false
+#        type: boolean
+#      Copy_Files_Prod_us_east_2:
+#        description: 'Initialize Cluster Prod (us-east-2)'
+#        required: false
+#        type: boolean
 
       Destroy_Development_us_east_2:
         description: 'Destroy Development (us_east_2)'
@@ -31,23 +31,25 @@ on:
         type: boolean
 
 jobs:
-  Build_Development_eu_west_1:
+
+  Build_Development_us_east_2:
     if: ${{ github.event.inputs.Build_Development_us_east_2 == 'true' }}
-    uses: ./.github/workflows/infra-provisioning-environment.yaml
+    uses: ./.github/workflows/infra-provisioning-resources.yaml
     with:
       region-code: us-east-2
       environment: dev
+      app-url: yaelwil-dev.int-devops.click
     secrets:
-      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_DEV }}
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
+
   Build_Production_us_east_2:
     if: ${{ github.event.inputs.Build_Production_us_east_2 == 'true' }}
-    uses: ./.github/workflows/infra-provisioning-environment.yaml
+    uses: ./.github/workflows/infra-provisioning-resources.yaml
     with:
       region-code: us-east-2
       environment: prod
+      app-url: yaelwil.int-devops.click
     secrets:
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
@@ -63,6 +65,8 @@ jobs:
     secrets:
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+
   Destroy_Production_us_east_2:
     if: ${{ github.event.inputs.Destroy_Production_us_east_2 == 'true' }}
     uses: ./.github/workflows/infra-destroy-environment.yaml
