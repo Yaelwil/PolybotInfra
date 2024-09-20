@@ -83,7 +83,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP \
           "kubectl create namespace ${{ inputs.environment }}" || echo 'Namespace already exists'"
 
-          # Generate the ConfigMap YAML file
           cat <<EOF > polybot-configmap.yaml
           apiVersion: v1
           kind: ConfigMap
@@ -117,6 +116,8 @@ jobs:
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
             FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
+            CERT_PREFIX: "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
           EOF
           
           # Generate the ConfigMap YAML file
@@ -134,7 +135,9 @@ jobs:
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
             FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
-          EOF 
+            TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
+            CERT_PREFIX: "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
+          EOF
 
           # Securely copy files to the remote server
           scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/k8s
