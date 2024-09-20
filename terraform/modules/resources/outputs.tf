@@ -116,3 +116,8 @@ output "env" {
   description = "Environment"
   value       = var.env
 }
+
+output "domain_name" {
+  description = "domain name"
+  value       = var.domain_name
+}

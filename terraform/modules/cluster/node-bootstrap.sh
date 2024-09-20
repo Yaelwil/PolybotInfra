@@ -73,18 +73,3 @@ swapoff -a
 
 # add the command to crontab to make it persistent across reboots
 (crontab -l ; echo "@reboot /sbin/swapoff -a") | crontab -
-
-# Install Argo CD in the `argocd` namespace
-kubectl create namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-
-# Download the latest version of Argo CD CLI
-VERSION=$(curl --silent "https://api.github.com/repos/argoproj/argo-cd/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
-curl -sSL -o argocd-linux-amd64 "https://github.com/argoproj/argo-cd/releases/download/$VERSION/argocd-linux-amd64"
-
-# Move the binary to a directory in your PATH (e.g., /usr/local/bin)
-chmod +x argocd-linux-amd64
-sudo mv argocd-linux-amd64 /usr/local/bin/argocd
-
-# Verify installation
-argocd version

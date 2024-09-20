@@ -11,7 +11,7 @@ resource "tls_self_signed_cert" "example" {
   private_key_pem = tls_private_key.example.private_key_pem
 
   subject {
-    common_name  = "yaelwil.int-devops.click"
+    common_name  = var.domain_name
     organization = "Example Organization"
   }
 
@@ -19,7 +19,7 @@ resource "tls_self_signed_cert" "example" {
   early_renewal_hours   = 720   # 30 days before expiration
 
   dns_names = [
-    "yaelwil.int-devops.click"
+    var.domain_name
   ]
 
   allowed_uses = [
@@ -29,7 +29,11 @@ resource "tls_self_signed_cert" "example" {
   ]
 }
 
-resource "aws_acm_certificate" "example" {
+###################
+# ACM Certificate #
+###################
+
+resource "aws_acm_certificate" "dev" {
   private_key       = tls_private_key.example.private_key_pem
   certificate_body  = tls_self_signed_cert.example.cert_pem
   tags = {

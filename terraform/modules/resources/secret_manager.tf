@@ -1,14 +1,3 @@
-###################
-# ACM Certificate #
-###################
-resource "aws_acm_certificate" "self_signed" {
-  private_key       = tls_private_key.example.private_key_pem
-  certificate_body  = tls_self_signed_cert.example.cert_pem
-  tags = {
-    Name = "self-signed-cert"
-  }
-}
-
 ###########
 # Secrets #
 ###########
@@ -28,8 +17,9 @@ resource "aws_secretsmanager_secret_version" "certificate_version" {
   secret_string = tls_self_signed_cert.example.cert_pem
 }
 
+# Store the Private key in Secrets Manager
 resource "aws_secretsmanager_secret" "private_key" {
-  name = "${var.owner}-certificate-PK-${var.env}-${var.region}-${uuid()}-${var.project}"
+  name = "${var.owner}-certificate-pk-${var.env}-${var.region}-${uuid()}-${var.project}"
 
   lifecycle {
     ignore_changes = [name]
