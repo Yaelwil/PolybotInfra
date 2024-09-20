@@ -72,3 +72,6 @@ swapoff -a
 
 # add the command to crontab to make it persistent across reboots
 (crontab -l ; echo "@reboot /sbin/swapoff -a") | crontab -
+
+# Install Helm
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
