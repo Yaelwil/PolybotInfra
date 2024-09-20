@@ -60,7 +60,6 @@ spec:
             configMapKeyRef:
               name: polybot-config
               key: TELEGRAM_TOKEN
-
         - name: CERT_PREFIX
           valueFrom:
             configMapKeyRef:
