@@ -91,7 +91,7 @@ jobs:
             namespace: ${{ inputs.environment }}
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "http://${{ inputs.app-url }}:80"
+            ALB_URL: 'http://${{ inputs.app-url }}:80'
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
@@ -110,7 +110,7 @@ jobs:
             namespace: ${{ inputs.environment }}
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "http://${{ inputs.app-url }}:80"
+            ALB_URL: 'http://${{ inputs.app-url }}:80'
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
@@ -129,7 +129,7 @@ jobs:
             namespace: ${{ inputs.environment }}
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "http://${{ inputs.app-url }}:80"
+            ALB_URL: 'http://${{ inputs.app-url }}:80'
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
