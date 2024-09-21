@@ -41,7 +41,6 @@ jobs:
           EC2_CONTROL_PLANE=$(aws ec2 describe-instances --region ${{ inputs.region-code }} \
               --filters "Name=tag:Name,Values=*control-plane*" \
                         "Name=tag:Name,Values=*yaelwil*" \
-                        "Name=tag:Name,Values=*${{ inputs.environment }}*" \
                         "Name=tag:Name,Values=*k8s-project*" \
               --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
               --output json)
@@ -57,7 +56,6 @@ jobs:
           EC2_WORKER_NODE=$(aws ec2 describe-instances --region ${{ inputs.region-code }} \
               --filters "Name=tag:Name,Values=*control-plane*" \
                         "Name=tag:Name,Values=*yaelwil*" \
-                        "Name=tag:Name,Values=*${{ inputs.environment }}*" \
                         "Name=tag:Name,Values=*k8s-project*" \
               --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
               --output json)
