@@ -29,7 +29,7 @@ module "resources" {
   polybot_port = var.polybot_port
   public_subnet_1_id = "subnet-0ff6b74a9f01f4f2d"
   public_subnet_2_id = "subnet-005569cab5dbde989"
-  instance_ids = ["i-00ede64490dcaf5aa", "i-0b943533f38814e65"]
+  instance_ids = ["i-0d6e0073a45decb07", "i-0c6d0775fe42bb3fa"]
 #   public_subnet_1_id = module.vpc.public_subnet_id_1
 #   public_subnet_2_id = module.vpc.public_subnet_id_2
 #   instance_ids = module.cluster.nodes_instance_ids
