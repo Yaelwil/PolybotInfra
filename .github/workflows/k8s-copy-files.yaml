@@ -1,4 +1,4 @@
-name: Polybot Infrastructure Terraform Environment
+name: Cluster Initialization
 
 on:
   workflow_call:
@@ -31,40 +31,16 @@ jobs:
     defaults:
       run:
         working-directory: terraform  # The directory containing your Terraform configuration files
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.2.0
-
-      - name: Terraform init
-        run: terraform init
-
-      - name: Terraform workspace select
-        run: terraform workspace select ${{ inputs.region-code }}-${{ inputs.environment }} || terraform workspace new ${{ inputs.region-code }}-${{ inputs.environment }}
-
-      - name: Terraform validate
-        run: terraform validate
-
-      - name: Terraform plan
-        run: | 
-          export TF_VAR_botToken=${{ secrets.TELEGRAM_TOKEN }}
-          terraform plan -var-file=region.${{ inputs.region-code }}.${{ inputs.environment }}.tfvars
-
-      - name: Terraform apply
-        run: |
-          export TF_VAR_botToken=${{ secrets.TELEGRAM_TOKEN }}
-          terraform apply -auto-approve -var-file=region.${{ inputs.region-code }}.${{ inputs.environment }}.tfvars
 
       - name: Get the control plane ip
         run: |
           EC2_CONTROL_PLANE=$(aws ec2 describe-instances --region ${{ inputs.region-code }} \
               --filters "Name=tag:Name,Values=*control-plane*" \
                         "Name=tag:Name,Values=*yaelwil*" \
-                        "Name=tag:Name,Values=*${{ inputs.environment }}*" \
                         "Name=tag:Name,Values=*k8s-project*" \
               --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
               --output json)
@@ -75,20 +51,6 @@ jobs:
           echo "CONTROL_PLANE_IP=$CONTROL_PLANE_IP" >> $GITHUB_ENV
           echo "INSTANCE_CP_ID=$INSTANCE_CP_ID" >> $GITHUB_ENV
 
-      - name: Get the worker node ip
-        run: |
-          EC2_WORKER_NODE=$(aws ec2 describe-instances --region ${{ inputs.region-code }} \
-              --filters "Name=tag:Name,Values=*control-plane*" \
-                        "Name=tag:Name,Values=*yaelwil*" \
-                        "Name=tag:Name,Values=*${{ inputs.environment }}*" \
-                        "Name=tag:Name,Values=*k8s-project*" \
-              --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
-              --output json)
-          
-          # Extract Worker Nodes IPs
-          WORKER_NODE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[0]')
-          echo "CONTROL_PLANE_IP=$CONTROL_PLANE_IP" >> $GITHUB_ENV
-
       - name: Copy k8s file
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > yaelwil-private-key.pem
@@ -96,7 +58,7 @@ jobs:
           
           # Ensure the namespace exists
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP \
-          "kubectl create namespace ${{ inputs.environment }}" || echo 'Namespace already exists'"
+          "kubectl create namespace ${{ inputs.environment }}" || echo 'Namespace already exists'
 
           # Generate the ConfigMap YAML file
           cat <<EOF > polybot-configmap.yaml
@@ -111,11 +73,12 @@ jobs:
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
-            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
-            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            YOLO_QUEUE_NAME: "polybot-yolo-service"
+            FILTERS_QUEUE_NAME: "polybot-filters-service"
             TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
             CERT_PREFIX: "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
           EOF
+
           
           # Generate the ConfigMap YAML file
           cat <<EOF > filters-configmap.yaml
@@ -130,8 +93,8 @@ jobs:
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
-            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
-            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            YOLO_QUEUE_NAME: "polybot-yolo-service"
+            FILTERS_QUEUE_NAME: "polybot-filters-service"
           EOF
           
           # Generate the ConfigMap YAML file
@@ -147,9 +110,9 @@ jobs:
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
-            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
-            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
-          EOF 
+            YOLO_QUEUE_NAME: "polybot-yolo-service"
+            FILTERS_QUEUE_NAME: "polybot-filters-service"
+          EOF
 
           # Securely copy files to the remote server
           scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/k8s
