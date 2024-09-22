@@ -11,5 +11,5 @@ data:
   DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-dev-us-east-2-k8s-project"
   YOLO_QUEUE_NAME: "polybot-yolo-service"
   FILTERS_QUEUE_NAME: "polybot-filters-service"
-  TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
+  TELEGRAM_TOKEN: "<token>"
   CERT_PREFIX: "yaelwil-certificate-dev-us-east-2"
