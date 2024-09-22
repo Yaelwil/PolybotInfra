@@ -138,12 +138,12 @@ output "filters_ebs_volume_type" {
   value       = var.filters_ebs_volume_type
 }
 
-output "env" {
-  description = "Environment"
-  value       = var.env
+output "domain_name_dev" {
+  description = "domain name"
+  value       = var.domain_name_dev
 }
 
-output "domain_name" {
+output "domain_name_prod" {
   description = "domain name"
-  value       = var.domain_name
+  value       = var.domain_name_prod
 }

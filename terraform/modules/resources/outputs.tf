@@ -1,8 +1,3 @@
-# output "my_key_pair" {
-#   description = "SSH key"
-#   value       = aws_key_pair.my_key_pair.key_name
-# }
-
 output "main_vpc_cidr" {
   description = "main_vpc_cidr"
   value       = var.main_vpc_cidr
@@ -56,24 +51,45 @@ output "public_subnet_2_id" {
   value       = var.public_subnet_2_id
 }
 
-output "bucket_arn" {
+output "bucket_arn_dev" {
   description = "bucket_arn"
-  value       = aws_s3_bucket.project_bucket.arn
+  value       = aws_s3_bucket.project_bucket_dev.arn
 }
 
-output "dynamodb_table_arn" {
+output "bucket_arn_prod" {
+  description = "bucket_arn"
+  value       = aws_s3_bucket.project_bucket_prod.arn
+}
+
+output "dynamodb_table_arn_dev" {
   description = "dynamodb_table_arn"
-  value       = aws_dynamodb_table.dynamodb-table.arn
+  value       = aws_dynamodb_table.dynamodb-table_dev.arn
 }
 
-output "yolov5_sqs_queue_arn" {
+output "dynamodb_table_arn_prod" {
+  description = "dynamodb_table_arn"
+  value       = aws_dynamodb_table.dynamodb-table_prod.arn
+}
+
+
+output "yolov5_sqs_queue_arn_dev" {
   description = "yolov5_sqs_queue_arn"
-  value       = aws_sqs_queue.yolov5_sqs_queue.arn
+  value       = aws_sqs_queue.yolov5_sqs_queue_dev.arn
 }
 
-output "filters_sqs_queue_arn" {
+output "yolov5_sqs_queue_arn_prod" {
+  description = "yolov5_sqs_queue_arn"
+  value       = aws_sqs_queue.yolov5_sqs_queue_prod.arn
+}
+
+output "filters_sqs_queue_arn_dev" {
   description = "filters_sqs_queue_arn"
-  value       = aws_sqs_queue.filters_sqs_queue.arn
+  value       = aws_sqs_queue.filters_sqs_queue_dev.arn
+}
+
+output "filters_sqs_queue_arn_prod" {
+  description = "filters_sqs_queue_arn"
+  value       = aws_sqs_queue.filters_sqs_queue_prod.arn
 }
 
 # output key_pair_name {
@@ -87,37 +103,12 @@ output "instance_ids" {
   value = var.instance_ids
 }
 
-output "bucket_name" {
-  description = "bucket name"
-  value       = aws_s3_bucket.project_bucket.bucket
-}
-
-# output "alb_url" {
-#   description = "SSH key"
-#   value       = aws_lb.main-alb.dns_name
-# }
-
-output "dynamodb_table_name" {
-  description = "dynamodb_table_name"
-  value       = aws_dynamodb_table.dynamodb-table.name
-}
-
-output "filters_queue_url" {
-  description = "filters_queue_url"
-  value       = aws_sqs_queue.filters_sqs_queue.url
-}
-
-output "yolo_queue_url" {
-  description = "yolo_queue_url"
-  value       = aws_sqs_queue.yolov5_sqs_queue.url
-}
-
-output "env" {
-  description = "Environment"
-  value       = var.env
-}
-
-output "domain_name" {
+output "domain_name_dev" {
   description = "domain name"
-  value       = var.domain_name
+  value       = var.domain_name_dev
+}
+
+output "domain_name_prod" {
+  description = "domain name"
+  value       = var.domain_name_prod
 }

@@ -80,12 +80,12 @@ variable "instance_ids" {
   description = "List of instance IDs to register in the target group"
 }
 
-variable "env" {
+variable "domain_name_dev" {
   type = string
-  description = "Environment"
+  description = "domain name dev"
 }
 
-variable "domain_name" {
+variable "domain_name_prod" {
   type = string
-  description = "domain name"
+  description = "domain name prod"
 }

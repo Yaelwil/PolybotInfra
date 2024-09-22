@@ -1,7 +1,5 @@
 #!/bin/bash
 
-k8s_version="v1.30"
-
 # install jq, awscli and ecr-credentials-helper (for those who store images in ECR)
 apt-get update
 apt-get install jq unzip -y
