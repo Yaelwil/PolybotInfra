@@ -6,9 +6,6 @@ on:
       region-code:
         required: true
         type: string
-      environment:
-        required: true
-        type: string
     secrets:
       AWS_ACCESS_KEY:
         required: true
