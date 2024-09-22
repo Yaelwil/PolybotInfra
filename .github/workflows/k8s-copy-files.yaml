@@ -114,9 +114,9 @@ jobs:
           EOF
 
           # Securely copy files to the remote server
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" filters-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/FiltersMicroservice
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" polybot-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/PolybotMicroservice
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" yolo-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/YoloMicroservice
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" filters-${{ inputs.environment }}-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/FiltersMicroservice
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" polybot-${{ inputs.environment }}-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/PolybotMicroservice
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" yolo-${{ inputs.environment }}-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/YoloMicroservice
 
           # Clean up the private key
           rm yaelwil-private-key.pem
