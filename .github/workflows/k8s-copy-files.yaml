@@ -61,7 +61,7 @@ jobs:
           "kubectl create namespace ${{ inputs.environment }}" || echo 'Namespace already exists'
 
           # Generate the ConfigMap YAML file
-          cat <<EOF > polybot-configmap.yaml
+          cat <<EOF > polybot-${{ inputs.environment }}-configmap.yaml
           apiVersion: v1
           kind: ConfigMap
           metadata:
@@ -77,11 +77,10 @@ jobs:
             FILTERS_QUEUE_NAME: "polybot-filters-service"
             TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
             CERT_PREFIX: "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
-          EOF
+          EOF        
 
-          
           # Generate the ConfigMap YAML file
-          cat <<EOF > filters-configmap.yaml
+          cat <<EOF > filters-${{ inputs.environment }}-configmap.yaml
           apiVersion: v1
           kind: ConfigMap
           metadata:
@@ -98,7 +97,7 @@ jobs:
           EOF
           
           # Generate the ConfigMap YAML file
-          cat <<EOF > yolo-configmap.yaml
+          cat <<EOF > yolo-${{ inputs.environment }}-configmap.yaml
           apiVersion: v1
           kind: ConfigMap
           metadata:
@@ -115,7 +114,6 @@ jobs:
           EOF
 
           # Securely copy files to the remote server
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/k8s
           scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" filters-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/FiltersMicroservice
           scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" polybot-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/PolybotMicroservice
           scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" yolo-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/YoloMicroservice

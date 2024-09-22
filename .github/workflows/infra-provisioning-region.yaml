@@ -100,3 +100,6 @@ jobs:
           export SSH_PRIVATE_KEY="${{ secrets.SSH_PRIVATE_KEY }}"
           chmod +x k8s_initializer.sh
           ./k8s_initializer.sh
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/k8s
+        env:
+          CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
