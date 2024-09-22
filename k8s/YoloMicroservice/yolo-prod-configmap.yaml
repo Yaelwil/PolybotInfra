@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: yolo-config
+  namespace: prod
+data:
+  TELEGRAM_APP_URL: "https://yaelwil.int-prodops.click"
+  ALB_URL: "polybot-service"
+  REGION: "us-east-2"
+  BUCKET_NAME: "yaelwil-bucket-prod-us-east-2-k8s-project"
+  DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-prod-us-east-2-k8s-project"
+  YOLO_QUEUE_NAME: "polybot-yolo-service"
+  FILTERS_QUEUE_NAME: "polybot-filters-service"
