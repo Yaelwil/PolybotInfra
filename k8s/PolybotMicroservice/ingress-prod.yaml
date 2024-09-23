@@ -5,11 +5,11 @@ metadata:
 spec:
   tls:
     - hosts:
-        - yaelwil-dev.int-devops.click
-      secretName: tls-secret
+        - yaelwil.int-devops.click
+      secretName: tls-secret-prod
   ingressClassName: nginx
   rules:
-    - host: yaelwil-dev.int-devops.click
+    - host: yaelwil.int-devops.click
       http:
         paths:
           - path: /

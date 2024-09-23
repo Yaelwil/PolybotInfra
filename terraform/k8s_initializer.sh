@@ -126,7 +126,7 @@ COMMAND_TO_JOIN=$(grep -A 2 "kubeadm join" kubeadm-init-output.txt)
 
 # Check if the command was found and display it
 if [ -n "$COMMAND_TO_JOIN" ]; then
-  echo -e "${GREEN}COMMAND_TO_JOIN: $COMMAND_TO_JOIN${NC}"
+  echo -e "COMMAND_TO_JOIN: ${GREEN}$COMMAND_TO_JOIN${NC}"
 else
   echo -e "${RED}Didn't get command to join.${NC}"
   exit 1
@@ -165,7 +165,7 @@ for WORKER_NODE_IP in $WORKER_NODE_IPS; do
   ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$WORKER_NODE_IP" "sudo $COMMAND_TO_JOIN"
 
 # Verify that the Worker Nodes joined successfully
-ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "kubectl get nodes"
+ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "kubectl get nodes"
 
   if [ $? -eq 0 ]; then
     echo -e "${GREEN}Worker Node joined successfully ($WORKER_NODE_IP).${NC}"
@@ -173,6 +173,7 @@ ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP"
     echo -e "${RED}Failed to join the Worker Node ($WORKER_NODE_IP).${NC}"
     exit 1
   fi
+done
 done
 
 #############################################################
