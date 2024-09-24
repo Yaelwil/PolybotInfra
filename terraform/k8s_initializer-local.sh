@@ -240,7 +240,6 @@ rm /tmp/ebs-csi-values.yaml
 ####################################
 
 ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
-
   # Add kubernetes-dashboard repository
   helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
   # Deploy a Helm Release named "kubernetes-dashboard" using the kubernetes-dashboard chart
@@ -255,8 +254,17 @@ ssh -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
 #  chmod +x /usr/local/bin/argocd
 #  argocd version
 
-  # Install Nginx ingress controller
-#  kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/aws/deploy.yaml
+  # Automatically approve and install Python and pip
+  sudo apt update
+  sudo apt install -y python3
+  sudo apt install -y python3-pip
+
+  # Install necessary Python packages globally
+  sudo pip3 install os
+  sudo pip3 install boto3
+  sudo pip3 install base64
+  sudo pip3 install kubernetes
+  sudo pip3 install kubernetes.client
 EOF
 
 if [ $? -eq 0 ]; then
