@@ -123,24 +123,24 @@ jobs:
           CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
 
-#      - name: Create secrets
-#        run: |
-#          export REGION=${{ inputs.region-code }}
-#          export CERT_PREFIX_${{ inputs.region-code }}=
-#          export KEY_PREFIX_DEV=
-#          ["CERT_PREFIX_PROD"]
-#          ["KEY_PREFIX_PROD"]
-#            TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
-#            CERT_PREFIX: "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
-#          ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP " python3 ~/k8s/PolyboInfra/k8s/ingress_setup.py"
-#
-#
-#          REGION = os.environ["REGION"]
-#
-#          cert_prefix_dev = os.environ["CERT_PREFIX_DEV"]
-#          key_prefix_dev = os.environ["KEY_PREFIX_DEV"]
-#          secret_name_dev = "tls-secret-dev"
-#
-#          cert_prefix_prod = os.environ["CERT_PREFIX_PROD"]
-#          key_prefix_prod = os.environ["KEY_PREFIX_PROD"]
-#          secret_name_prod = "tls-secret-prod"
+      - name: Create secrets
+        run: |
+          export REGION=${{ inputs.region-code }}
+          export CERT_PREFIX_${{ inputs.region-code }}=
+          export KEY_PREFIX_DEV=
+          ["CERT_PREFIX_PROD"]
+          ["KEY_PREFIX_PROD"]
+            TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
+            CERT_PREFIX: "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
+          ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP " python3 ~/k8s/PolyboInfra/k8s/ingress_setup.py"
+
+
+          REGION = os.environ["REGION"]
+
+          cert_prefix_dev = os.environ["CERT_PREFIX_DEV"]
+          key_prefix_dev = os.environ["KEY_PREFIX_DEV"]
+          secret_name_dev = "tls-secret-dev"
+
+          cert_prefix_prod = os.environ["CERT_PREFIX_PROD"]
+          key_prefix_prod = os.environ["KEY_PREFIX_PROD"]
+          secret_name_prod = "tls-secret-prod"

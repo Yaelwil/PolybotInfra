@@ -93,7 +93,6 @@ jobs:
           INSTANCE_CP_ID: ${{ env.INSTANCE_CP_ID }}
           INSTANCE_WN_IDS: ${{ env.WORKER_NODE_ID }}
 
-
       - name: Cluster Initialization
         run: |
           export REGION=${{ inputs.region-code }}
