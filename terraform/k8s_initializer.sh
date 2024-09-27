@@ -249,7 +249,6 @@ EOF
     echo -e "${RED}Failed to install the EBS CSI driver on Control Plane node ($CONTROL_PLANE_IP).${NC}"
     exit 1
   fi
-done
 
 ############################
 # Clean unnecessary files #
