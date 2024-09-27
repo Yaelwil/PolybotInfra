@@ -278,10 +278,13 @@ ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP"
 
   # Automatically approve and install Python and pip
   sudo apt update
-  sudo apt install -y python3
-  sudo apt install -y python3-pip
+  sudo apt install -y python3 python3-venv
 
-  # Install necessary Python packages globally
+  # Create a virtual environment
+  python3 -m venv myenv
+  source myenv/bin/activate
+
+  # Install necessary Python packages
   pip install boto3 kubernetes
 EOF
 
