@@ -122,7 +122,7 @@ for CONTROL_PLANE_IP in $CONTROL_PLANE_IPS; do
 ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "sudo kubeadm init --config $REMOTE_CLUSTER_CONFIG_PATH" | tee kubeadm-init-output.txt
 
 # Extract the 'kubeadm join' command from the output
-COMMAND_TO_JOIN=$(grep -A 5 "kubeadm join" kubeadm-init-output.txt | tr -d '\n' | sed 's/\\//g')
+COMMAND_TO_JOIN=$(grep -A 2 "kubeadm join" kubeadm-init-output.txt | tr -d '\n' | sed 's/\\//g')
 
 # Check if the command was found and display it
 if [ -n "$COMMAND_TO_JOIN" ]; then
@@ -136,15 +136,15 @@ fi
 # Step 2: Set up kubeconfig #
 #############################
 
-ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
-    # Create .kube directory
-    sudo mkdir -p $HOME/.kube
+ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << 'EOF'
+# Create .kube directory
+mkdir -p $HOME/.kube
 
-    # Copy the Kubernetes admin configuration file
-    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+# Copy the Kubernetes admin configuration file
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 
-    # Change ownership of the configuration file
-    sudo chown $(id -u):$(id -g) $HOME/.kube/config
+# Change ownership of the configuration file
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
 EOF
 
 if [ $? -eq 0 ]; then
