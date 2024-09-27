@@ -126,8 +126,11 @@ jobs:
       - name: Create secrets
         run: |
           export REGION=${{ inputs.region-code }}
-          export CERT_PREFIX_${{ inputs.region-code }}=
-          export KEY_PREFIX_DEV=
+          export ENV=${{ inputs.environment }}
+          export CERT_PREFIX = "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
+          export KEY_PREFIX = "yaelwil-certificate-pk-${{ inputs.environment }}-${{ inputs.region-code }}"
+          export SECRET_NAME = "tls-secret-${{ inputs.environment }}"
+          
           ["CERT_PREFIX_PROD"]
           ["KEY_PREFIX_PROD"]
             TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
