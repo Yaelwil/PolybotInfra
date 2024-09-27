@@ -261,6 +261,7 @@ rm /tmp/ebs-csi-values.yaml
 
 ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
 
+  kubectl create namespace kubernetes-dashboard || true
   # Add kubernetes-dashboard repository
   helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
   # Deploy a Helm Release named "kubernetes-dashboard" using the kubernetes-dashboard chart
@@ -281,11 +282,7 @@ ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP"
   sudo apt install -y python3-pip
 
   # Install necessary Python packages globally
-  sudo pip3 install os
-  sudo pip3 install boto3
-  sudo pip3 install base64
-  sudo pip3 install kubernetes
-  sudo pip3 install kubernetes.client
+  pip install boto3 kubernetes
 EOF
 
 if [ $? -eq 0 ]; then
