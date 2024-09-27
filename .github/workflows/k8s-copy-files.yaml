@@ -1,4 +1,4 @@
-name: Cluster Initialization
+name: Copy files
 
 on:
   workflow_call:

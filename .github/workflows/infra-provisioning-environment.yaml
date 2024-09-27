@@ -1,4 +1,4 @@
-name: Cluster Initialization
+name: infra-provisioning-environment.
 
 on:
   workflow_call:
