@@ -123,27 +123,13 @@ jobs:
           CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
 
-      - name: Create secrets
+      - name: Create secret
         run: |
           export REGION=${{ inputs.region-code }}
           export ENV=${{ inputs.environment }}
-          export CERT_PREFIX = "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
-          export KEY_PREFIX = "yaelwil-certificate-pk-${{ inputs.environment }}-${{ inputs.region-code }}"
-          export SECRET_NAME = "tls-secret-${{ inputs.environment }}"
-          
-          ["CERT_PREFIX_PROD"]
-          ["KEY_PREFIX_PROD"]
-            TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
-            CERT_PREFIX: "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
-          ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP " python3 ~/k8s/PolyboInfra/k8s/ingress_setup.py"
+          export CERT_PREFIX="yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
+          export KEY_PREFIX="yaelwil-certificate-pk-${{ inputs.environment }}-${{ inputs.region-code }}"
+          export SECRET_NAME="tls-secret-${{ inputs.environment }}"
 
-
-          REGION = os.environ["REGION"]
-
-          cert_prefix_dev = os.environ["CERT_PREFIX_DEV"]
-          key_prefix_dev = os.environ["KEY_PREFIX_DEV"]
-          secret_name_dev = "tls-secret-dev"
-
-          cert_prefix_prod = os.environ["CERT_PREFIX_PROD"]
-          key_prefix_prod = os.environ["KEY_PREFIX_PROD"]
-          secret_name_prod = "tls-secret-prod"
+          ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP \
+          "export CERT_PREFIX=$CERT_PREFIX && export KEY_PREFIX=$KEY_PREFIX && export SECRET_NAME=$SECRET_NAME && python3 ~/k8s/PolyboInfra/k8s/ingress_setup.py"

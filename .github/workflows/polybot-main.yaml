@@ -8,6 +8,10 @@ on:
         description: 'Build us-east-2'
         required: false
         type: boolean
+      Build_eu_west_1:
+        description: 'Build eu-west-1'
+        required: false
+        type: boolean
 
       Copy_Files_Dev_us_east_2:
         description: 'Copy Files Development (us-east-2)'
@@ -18,11 +22,23 @@ on:
         required: false
         type: boolean
 
-      Destroy_us_east_2:
-        description: 'Destroy Development (us_east_2)'
+      Initialize_Dev_eu-west-1:
+        description: 'Initialize Development (eu-west-1)'
+        required: false
+        type: boolean
+      Initialize_Prod_eu-west-1:
+        description: 'Initialize Production (eu-west-1)'
         required: false
         type: boolean
 
+      Destroy_us_east_2:
+        description: 'Destroy us_east_2'
+        required: false
+        type: boolean
+      Destroy_eu_west_1:
+        description: 'Destroy eu_west_1'
+        required: false
+        type: boolean
 jobs:
 
   Build_us_east_2:
@@ -66,6 +82,51 @@ jobs:
     uses: ./.github/workflows/infra-destroy-region.yaml
     with:
       region-code: us-east-2
+    secrets:
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  Build_eu_west_1:
+    if: ${{ github.event.inputs.Build_eu_west_1 == 'true' }}
+    uses: ./.github/workflows/infra-provisioning-region.yaml
+    with:
+      region-code: eu-west-1
+    secrets:
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
+
+  Initialize_Dev_eu-west-1:
+    if: ${{ github.event.inputs.Initialize_Dev_eu-west-1 == 'true' }}
+    uses: ./.github/workflows/infra-provisioning-environment.yaml
+    with:
+      region-code: eu-west-1
+      environment: dev
+      app-url: yaelwil-dev.int-devops.click
+    secrets:
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_DEV }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
+
+  Initialize_Prod_eu-west-1:
+    if: ${{ github.event.inputs.Initialize_Prod_eu-west-1 == 'true' }}
+    uses: ./.github/workflows/infra-provisioning-environment.yaml
+    with:
+      region-code: eu-west-1
+      environment: prod
+      app-url: yaelwil.int-devops.click
+    secrets:
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_PROD }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_K8S }}
+
+  Destroy_eu_west_1:
+    if: ${{ github.event.inputs.Destroy_eu_west_1 == 'true' }}
+    uses: ./.github/workflows/infra-destroy-region.yaml
+    with:
+      region-code: eu-west-1
     secrets:
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
