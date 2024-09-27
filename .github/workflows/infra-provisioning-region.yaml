@@ -105,6 +105,10 @@ jobs:
           ./k8s_initializer.sh
         env:
           CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
+
+      - name: Wait for CoreDNS pods to be ready
+        run: |
+          kubectl wait --for=condition=Ready pods --all -n kube-system --timeout=180s
           
       - name: TLS secret creation
         run: |
@@ -131,6 +135,14 @@ jobs:
             # Run the Python script for ingress setup on the control plane
             python3 ~/k8s/ingress_setup.py
           EOF
+
+      - name: Install Ingress Controller
+        run: |
+          # SSH into the control plane to install ingress controller
+          ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP << EOF
+            kubectl apply -f ~/k8s/deploy.yaml
+          EOF
+
       - name: ConfigMap creation and copy
         run: |
           # Ensure the namespace exists
