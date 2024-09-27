@@ -108,21 +108,19 @@ jobs:
           
       - name: TLS secret creation
         run: |
-          export REGION=${{ inputs.region-code }}
-          export CERT_PREFIX_DEV="yaelwil-certificate-dev-${{ inputs.region-code }}"
-          export KEY_PREFIX_DEV="yaelwil-certificate-pk-dev-${{ inputs.region-code }}"
-          export secret_name_dev="tls-secret-dev"
-
-          export CERT_PREFIX_PROD="yaelwil-certificate-prod-${{ inputs.region-code }}"
-          export KEY_PREFIX_PROD="yaelwil-certificate-pk-prod-${{ inputs.region-code }}"
-          export secret_name_prod="tls-secret-prod"
-          
-          echo $PWD
           # Copy necessary files to the control plane
           scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/k8s
           
           # SSH into the control plane to execute the TLS secret creation
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP << EOF
+            export REGION=${{ inputs.region-code }}
+            export CERT_PREFIX_DEV="yaelwil-certificate-dev-${{ inputs.region-code }}"
+            export KEY_PREFIX_DEV="yaelwil-certificate-pk-dev-${{ inputs.region-code }}"
+            export secret_name_dev="tls-secret-dev"
+  
+            export CERT_PREFIX_PROD="yaelwil-certificate-prod-${{ inputs.region-code }}"
+            export KEY_PREFIX_PROD="yaelwil-certificate-pk-prod-${{ inputs.region-code }}"
+            export secret_name_prod="tls-secret-prod"
             # SSH into the control plane to create namespaces
             kubectl create namespace dev || echo "Namespace 'dev' already exists"
             kubectl create namespace prod || echo "Namespace 'prod' already exists"
