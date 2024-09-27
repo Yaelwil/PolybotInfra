@@ -1,7 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: polybot-ingress
+  name: polybot-ingress-dev
+  namespace: dev
 spec:
   tls:
     - hosts:
