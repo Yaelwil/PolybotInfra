@@ -116,11 +116,11 @@ jobs:
             export REGION=${{ inputs.region-code }}
             export CERT_PREFIX_DEV="yaelwil-certificate-dev-${{ inputs.region-code }}"
             export KEY_PREFIX_DEV="yaelwil-certificate-pk-dev-${{ inputs.region-code }}"
-            export secret_name_dev="tls-secret-dev"
+            export SECRET_NAME_DEV="tls-secret-dev"
   
             export CERT_PREFIX_PROD="yaelwil-certificate-prod-${{ inputs.region-code }}"
             export KEY_PREFIX_PROD="yaelwil-certificate-pk-prod-${{ inputs.region-code }}"
-            export secret_name_prod="tls-secret-prod"
+            export SECRET_NAME_PROD="tls-secret-prod"
             # SSH into the control plane to create namespaces
             kubectl create namespace dev || echo "Namespace 'dev' already exists"
             kubectl create namespace prod || echo "Namespace 'prod' already exists"
