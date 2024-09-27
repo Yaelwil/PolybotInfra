@@ -5,10 +5,14 @@ from kubernetes import client, config
 from kubernetes.client import ApiException
 
 REGION = os.environ["REGION"]
-ENVIRONMENT = os.environ["ENV"]
-cert_prefix = os.environ["CERT_PREFIX"]
-key_prefix = os.environ["KEY_PREFIX"]
-secret_name_to_set = os.environ["SECRET_NAME"]
+
+cert_prefix_dev = os.environ["CERT_PREFIX_DEV"]
+key_prefix_dev = os.environ["KEY_PREFIX_DEV"]
+secret_name_to_set_dev = os.environ["SECRET_NAME_DEV"]
+
+cert_prefix_prod = os.environ["CERT_PREFIX_PROD"]
+key_prefix_prod = os.environ["KEY_PREFIX_PROD"]
+secret_name_to_set_prod = os.environ["SECRET_NAME_PROD"]
 
 # Load Kubernetes config
 config.load_kube_config()
@@ -67,8 +71,14 @@ def create_tls_secret(secret_name, private_key, certificate, namespace):
 
 
 if __name__ == "__main__":
-    PRIVATE_KEY = get_secret(REGION, key_prefix)
-    CERTIFICATE = get_secret(REGION, cert_prefix)
+    PRIVATE_KEY_DEV = get_secret(REGION, key_prefix_dev)
+    CERTIFICATE_DEV = get_secret(REGION, cert_prefix_dev)
 
-    if PRIVATE_KEY and CERTIFICATE:
-        create_tls_secret(secret_name_to_set, PRIVATE_KEY, CERTIFICATE, ENVIRONMENT)
+    PRIVATE_KEY_PROD = get_secret(REGION, key_prefix_prod)
+    CERTIFICATE_PROD = get_secret(REGION, cert_prefix_prod)
+
+    if PRIVATE_KEY_DEV and CERTIFICATE_DEV:
+        create_tls_secret(secret_name_to_set_dev, PRIVATE_KEY_DEV, CERTIFICATE_DEV, "dev")
+
+    if PRIVATE_KEY_PROD and CERTIFICATE_PROD:
+        create_tls_secret(secret_name_to_set_prod, PRIVATE_KEY_PROD, CERTIFICATE_PROD, "prod")

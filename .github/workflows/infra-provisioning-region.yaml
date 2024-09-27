@@ -104,3 +104,18 @@ jobs:
           scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/k8s
         env:
           CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
+          
+      - name: TLS secret creation
+        run: |
+          export REGION=${{ inputs.region-code }}
+          export CERT_PREFIX_DEV="yaelwil-certificate-dev-${{ inputs.region-code }}"
+          export KEY_PREFIX_DEV="yaelwil-certificate-pk-dev-${{ inputs.region-code }}"
+          export secret_name_dev="tls-secret-dev"
+
+          export CERT_PREFIX_PROD="yaelwil-certificate-prod-${{ inputs.region-code }}"
+          export KEY_PREFIX_PROD="yaelwil-certificate-pk-prod-${{ inputs.region-code }}"
+          export secret_name_prod="tls-secret-prod"
+          
+          # Activate the virtual environment
+          source k8s/myenv/bin/activate  
+          python3 ingress_setup.py 
