@@ -72,8 +72,8 @@ jobs:
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
-            YOLO_QUEUE_NAME: "polybot-yolo-service"
-            FILTERS_QUEUE_NAME: "polybot-filters-service"
+            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
             TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
             CERT_PREFIX: "yaelwil-certificate-${{ inputs.environment }}-${{ inputs.region-code }}"
           EOF
@@ -91,8 +91,8 @@ jobs:
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
-            YOLO_QUEUE_NAME: "polybot-yolo-service"
-            FILTERS_QUEUE_NAME: "polybot-filters-service"
+            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
           EOF
           
           # Generate the ConfigMap YAML file
@@ -108,8 +108,8 @@ jobs:
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project"
-            YOLO_QUEUE_NAME: "polybot-yolo-service"
-            FILTERS_QUEUE_NAME: "polybot-filters-service"
+            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
+            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-${{ inputs.environment }}-${{ inputs.region-code }}-k8s-project.fifo"
           EOF
 
           # Securely copy files to the remote server
