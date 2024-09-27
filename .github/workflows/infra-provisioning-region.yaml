@@ -119,7 +119,7 @@ jobs:
           
           echo $PWD
           # Copy necessary files to the control plane
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ./k8s ubuntu@$CONTROL_PLANE_IP:~/k8s
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/k8s
           
           # SSH into the control plane to execute the TLS secret creation
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP << EOF
