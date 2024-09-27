@@ -108,7 +108,9 @@ jobs:
 
       - name: Wait for CoreDNS pods to be ready
         run: |
-          kubectl wait --for=condition=Ready pods --all -n kube-system --timeout=180s
+          ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP << EOF
+            kubectl wait --for=condition=Ready pods --all -n kube-system --timeout=180s
+          EOF
           
       - name: TLS secret creation
         run: |
