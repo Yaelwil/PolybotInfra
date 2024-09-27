@@ -122,7 +122,7 @@ for CONTROL_PLANE_IP in $CONTROL_PLANE_IPS; do
 ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" "sudo kubeadm init --config $REMOTE_CLUSTER_CONFIG_PATH" | tee kubeadm-init-output.txt
 
 # Extract the 'kubeadm join' command from the output
-COMMAND_TO_JOIN=$(grep -A 5 "kubeadm join" kubeadm-init-output.txt)
+COMMAND_TO_JOIN=$(grep -A 5 "kubeadm join" kubeadm-init-output.txt | tr -d '\n' | sed 's/\\//g')
 
 # Check if the command was found and display it
 if [ -n "$COMMAND_TO_JOIN" ]; then
