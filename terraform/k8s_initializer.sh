@@ -294,3 +294,4 @@ else
   echo -e "${RED}K8S dashboard, ArgoCD and Nginx ingress controller weren't installed${NC}"
   exit 1
 fi
+done
