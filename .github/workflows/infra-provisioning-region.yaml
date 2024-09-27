@@ -94,6 +94,9 @@ jobs:
 
       - name: Cluster Initialization
         run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > yaelwil-private-key.pem
+          chmod 400 yaelwil-private-key.pem
+          
           export REGION=${{ inputs.region-code }}
           export SSH_PRIVATE_KEY="${{ secrets.SSH_PRIVATE_KEY }}"
           chmod +x k8s_initializer.sh
