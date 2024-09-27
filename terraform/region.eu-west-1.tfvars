@@ -29,3 +29,5 @@ asg_yolov5_min_size = 1
 filters_ebs_dev_name = "/dev/sdh"
 filters_ebs_volume_size = 20
 filters_ebs_volume_type = "gp2"
+domain_name_dev = "yaelwil-dev.int-devops.click"
+domain_name_prod = "yaelwil.int-devops.click"
