@@ -1,4 +1,4 @@
-name: infra-provisioning-environment.
+name: Infra Provisioning Environment
 
 on:
   workflow_call:
