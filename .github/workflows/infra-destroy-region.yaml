@@ -33,7 +33,7 @@ jobs:
           terraform init
           
           # select workspace or create if needed
-          terraform workspace select ${{ inputs.region-code }}-${{ inputs.environment }}  || terraform workspace new ${{ inputs.region-code }}-${{ inputs.environment }}
+          terraform workspace select ${{ inputs.region-code }}  || terraform workspace new ${{ inputs.region-code }}
 
           # tf destroy 
-          terraform destroy -auto-approve -var-file=region.${{ inputs.region-code }}.${{ inputs.environment }}.tfvars
+          terraform destroy -auto-approve -var-file=region.${{ inputs.region-code }}.tfvars
