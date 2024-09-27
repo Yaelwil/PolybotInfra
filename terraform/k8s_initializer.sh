@@ -195,7 +195,6 @@ EOF
     echo -e "${RED}Flannel and AWS Cloud Controller Manager wasn't installed ($CONTROL_PLANE_IP).${NC}"
     exit 1
   fi
-done
 
 ############################
 # Clean unnecessary files  #
@@ -226,12 +225,12 @@ EOF
 for CONTROL_PLANE_IP in $CONTROL_PLANE_IPS; do
   scp -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" /tmp/ebs-csi-values.yaml "$EC2_USER@$CONTROL_PLANE_IP:$EBS_CSI_VALUES_DIRECTORY"
 
-  if [ $? -eq 0 ]; then
-    echo -e "${GREEN}Copied the EBS CSI driver values file to the Control Plane node ($CONTROL_PLANE_IP) successfully.${NC}"
-  else
-    echo -e "${RED}Failed to copy the EBS CSI driver values file to the Control Plane node ($CONTROL_PLANE_IP).${NC}"
-    exit 1
-  fi
+if [ $? -eq 0 ]; then
+  echo -e "${GREEN}Copied the EBS CSI driver values file to the Control Plane node ($CONTROL_PLANE_IP) successfully.${NC}"
+else
+  echo -e "${RED}Failed to copy the EBS CSI driver values file to the Control Plane node ($CONTROL_PLANE_IP).${NC}"
+  exit 1
+fi
 
   # Connect to the Control Plane node and install the EBS CSI driver using Helm
   ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
@@ -243,12 +242,12 @@ for CONTROL_PLANE_IP in $CONTROL_PLANE_IPS; do
     helm upgrade --install aws-ebs-csi-driver -f $EBS_CSI_VALUES_PATH -n kube-system aws-ebs-csi-driver/aws-ebs-csi-driver
 EOF
 
-  if [ $? -eq 0 ]; then
-    echo -e "${GREEN}EBS CSI driver installed successfully on Control Plane node ($CONTROL_PLANE_IP).${NC}"
-  else
-    echo -e "${RED}Failed to install the EBS CSI driver on Control Plane node ($CONTROL_PLANE_IP).${NC}"
-    exit 1
-  fi
+if [ $? -eq 0 ]; then
+  echo -e "${GREEN}EBS CSI driver installed successfully on Control Plane node ($CONTROL_PLANE_IP).${NC}"
+else
+  echo -e "${RED}Failed to install the EBS CSI driver on Control Plane node ($CONTROL_PLANE_IP).${NC}"
+  exit 1
+fi
 
 ############################
 # Clean unnecessary files #
