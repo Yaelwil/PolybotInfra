@@ -1,7 +1,7 @@
 region             = "eu-west-1"
 availability_zone_1 = "eu-west-1a"
 availability_zone_2 = "eu-west-1b"
-instance_type= "t3.large"
+instance_type= "t3.medium"
 owner_name = "yaelwil"
 project_name = "k8s-project"
 cluster_name = "yaelwil-cluster-k8s"
