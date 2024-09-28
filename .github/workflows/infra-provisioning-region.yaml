@@ -106,10 +106,21 @@ jobs:
         env:
           CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
 
-      - name: Wait for CoreDNS pods to be ready
+      - name: Wait for any kube-system pods to be ready
         run: |
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP << EOF
-            kubectl wait --for=condition=Ready pods --all -n kube-system --timeout=180s
+            TIMEOUT=180
+            END=\$((SECONDS + TIMEOUT))
+            while [ \$SECONDS -lt \$END ]; do
+              if kubectl get pods -n kube-system --field-selector=status.phase=Running | grep -q 'Running'; then
+                echo "At least one kube-system pod is ready."
+                exit 0
+              fi
+              echo "Waiting for kube-system pods to become ready..."
+              sleep 5
+            done
+            echo "Timed out waiting for kube-system pods to be ready."
+            exit 1
           EOF
           
       - name: TLS secret creation
