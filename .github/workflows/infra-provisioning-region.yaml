@@ -13,6 +13,10 @@ on:
         required: true
       SSH_PRIVATE_KEY:
         required: true
+      TELEGRAM_TOKEN_DEV:
+        required: true
+      TELEGRAM_TOKEN_PROD:
+        required: true
 
 jobs:
   Terraform:
@@ -105,23 +109,6 @@ jobs:
           ./k8s_initializer.sh
         env:
           CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
-
-      - name: Wait for any kube-system pods to be ready
-        run: |
-          ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP << EOF
-            TIMEOUT=180
-            END=\$((SECONDS + TIMEOUT))
-            while [ \$SECONDS -lt \$END ]; do
-              if kubectl get pods -n kube-system --field-selector=status.phase=Running | grep -q 'Running'; then
-                echo "At least one kube-system pod is ready."
-                exit 0
-              fi
-              echo "Waiting for kube-system pods to become ready..."
-              sleep 5
-            done
-            echo "Timed out waiting for kube-system pods to be ready."
-            exit 1
-          EOF
           
       - name: TLS secret creation
         run: |
@@ -178,7 +165,7 @@ jobs:
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-dev-${{ inputs.region-code }}-k8s-project"
             YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-dev-${{ inputs.region-code }}-k8s-project.fifo"
             FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-dev-${{ inputs.region-code }}-k8s-project.fifo"
-            TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
+            TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN_DEV }}"
             CERT_PREFIX: "yaelwil-certificate-dev-${{ inputs.region-code }}"
           EOF
           
@@ -196,7 +183,7 @@ jobs:
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-prod-${{ inputs.region-code }}-k8s-project"
             YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
             FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
-            TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}"
+            TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN_PROD }}"
             CERT_PREFIX: "yaelwil-certificate-prod-${{ inputs.region-code }}"
           EOF
 
@@ -278,4 +265,5 @@ jobs:
           rm yaelwil-private-key.pem
         env:
           CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_TOKEN_DEV: ${{ secrets.TELEGRAM_TOKEN_DEV }}
+          TELEGRAM_TOKEN_PROD: ${{ secrets.TELEGRAM_TOKEN_PROD  }}
