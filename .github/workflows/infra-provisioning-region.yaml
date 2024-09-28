@@ -97,12 +97,6 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > yaelwil-private-key.pem
           chmod 400 yaelwil-private-key.pem
 
-      - name: Wait for CoreDNS pods to be ready
-        run: |
-          ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP << EOF
-            kubectl wait --for=condition=Ready pods --all -n kube-system --timeout=180s
-          EOF
-
       - name: Cluster Initialization
         run: |
           export REGION=${{ inputs.region-code }}
