@@ -1,7 +1,7 @@
 region             = "us-east-2"
 availability_zone_1 = "us-east-2a"
 availability_zone_2 = "us-east-2b"
-instance_type= "t3.medium"
+instance_type= "t3.large"
 owner_name = "yaelwil"
 project_name = "k8s-project"
 cluster_name = "yaelwil-cluster-k8s"
