@@ -34,7 +34,7 @@ jobs:
 
   Build_us_east_2:
     if: ${{ github.event.inputs.Build_us_east_2 == 'true' }}
-    uses: ./.github/workflows/infra-provisioning-region.yaml
+    uses: ./.github/workflows/infra-provisioning-environment.yaml
     with:
       region-code: us-east-2
     secrets:
