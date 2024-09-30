@@ -4,7 +4,7 @@ metadata:
   name: filters-config
   namespace: prod
 data:
-  TELEGRAM_APP_URL: "https://yaelwil.int-prodops.click"
+  TELEGRAM_APP_URL: "https://yaelwil.int-devops.click"
   ALB_URL: "polybot-service"
   REGION: "us-east-2"
   BUCKET_NAME: "yaelwil-bucket-prod-us-east-2-k8s-project"
