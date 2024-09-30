@@ -40,16 +40,6 @@ spec:
             configMapKeyRef:
               name: filters-config
               key: BUCKET_NAME
-        - name: DYNAMODB_TABLE_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: filters-config
-              key: DYNAMODB_TABLE_NAME
-        - name: YOLO_QUEUE_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: filters-config
-              key: YOLO_QUEUE_NAME
         - name: FILTERS_QUEUE_NAME
           valueFrom:
             configMapKeyRef:

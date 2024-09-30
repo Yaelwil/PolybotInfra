@@ -50,11 +50,6 @@ spec:
             configMapKeyRef:
               name: yolo-config
               key: YOLO_QUEUE_NAME
-        - name: FILTERS_QUEUE_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: yolo-config
-              key: FILTERS_QUEUE_NAME
 ---
 apiVersion: v1
 kind: Service

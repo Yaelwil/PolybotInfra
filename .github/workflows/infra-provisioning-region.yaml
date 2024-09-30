@@ -159,7 +159,7 @@ jobs:
             namespace: dev
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "http://${{ inputs.app-url }}:80"
+            ALB_URL: "https://${{ inputs.app-url }}"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-dev-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-dev-${{ inputs.region-code }}-k8s-project"
@@ -177,7 +177,7 @@ jobs:
             namespace: prod
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "http://${{ inputs.app-url }}:80"
+            ALB_URL: "https://${{ inputs.app-url }}"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-prod-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-prod-${{ inputs.region-code }}-k8s-project"
@@ -196,11 +196,9 @@ jobs:
             namespace: dev
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "http://${{ inputs.app-url }}:80"
+            ALB_URL: "https://${{ inputs.app-url }}"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-dev-${{ inputs.region-code }}-k8s-project"
-            DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-dev-${{ inputs.region-code }}-k8s-project"
-            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-dev-${{ inputs.region-code }}-k8s-project.fifo"
             FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-dev-${{ inputs.region-code }}-k8s-project.fifo"
           EOF
           
@@ -212,11 +210,9 @@ jobs:
             namespace: prod
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "http://${{ inputs.app-url }}:80"
+            ALB_URL: "https://${{ inputs.app-url }}"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-prod-${{ inputs.region-code }}-k8s-project"
-            DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-prod-${{ inputs.region-code }}-k8s-project"
-            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
             FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
           EOF
 
@@ -229,12 +225,11 @@ jobs:
             namespace: dev
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "http://${{ inputs.app-url }}:80"
+            ALB_URL: "https://${{ inputs.app-url }}"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-dev-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-dev-${{ inputs.region-code }}-k8s-project"
             YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-dev-${{ inputs.region-code }}-k8s-project.fifo"
-            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-dev-${{ inputs.region-code }}-k8s-project.fifo"
           EOF
           
           cat <<EOF > yolo-prod-configmap.yaml
@@ -245,12 +240,11 @@ jobs:
             namespace: prod
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "http://${{ inputs.app-url }}:80"
+            ALB_URL: "https://${{ inputs.app-url }}"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-prod-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-prod-${{ inputs.region-code }}-k8s-project"
             YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
-            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
           EOF
 
           # Securely copy files to the remote server

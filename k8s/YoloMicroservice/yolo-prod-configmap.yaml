@@ -10,5 +10,4 @@ data:
   BUCKET_NAME: "yaelwil-bucket-prod-us-east-2-k8s-project"
   DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-prod-us-east-2-k8s-project"
   YOLO_QUEUE_NAME: "polybot-yolo-service"
-  FILTERS_QUEUE_NAME: "polybot-filters-service"
   CERT_PREFIX: "yaelwil-certificate-prod-us-east-2"
