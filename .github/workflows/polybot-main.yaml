@@ -82,6 +82,8 @@ jobs:
     uses: ./.github/workflows/infra-provisioning-region.yaml
     with:
       region-code: eu-west-1
+      telegram_app_url_dev: https://yaelwil-dev.int-devops.click
+      telegram_app_url_prod: https://yaelwil.int-devops.click
     secrets:
       TELEGRAM_TOKEN_DEV: ${{ secrets.TELEGRAM_TOKEN_DEV }}
       TELEGRAM_TOKEN_PROD: ${{ secrets.TELEGRAM_TOKEN_PROD }}

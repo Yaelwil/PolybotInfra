@@ -6,6 +6,12 @@ on:
       region-code:
         required: true
         type: string
+      telegram_app_url_dev:
+        required: true
+        type: string
+      telegram_app_url_prod:
+        required: true
+        type: string
     secrets:
       AWS_ACCESS_KEY:
         required: true
@@ -17,6 +23,8 @@ on:
         required: true
       TELEGRAM_TOKEN_PROD:
         required: true
+
+
 
 jobs:
   Terraform:
@@ -158,13 +166,13 @@ jobs:
             name: polybot-config
             namespace: dev
           data:
-            TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "https://${{ inputs.app-url }}"
+            TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_dev }}"
+            ALB_URL: "polybot-service"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-dev-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-dev-${{ inputs.region-code }}-k8s-project"
-            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-dev-${{ inputs.region-code }}-k8s-project.fifo"
-            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-dev-${{ inputs.region-code }}-k8s-project.fifo"
+            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
+            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
             TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN_DEV }}"
             CERT_PREFIX: "yaelwil-certificate-dev-${{ inputs.region-code }}"
           EOF
@@ -176,8 +184,8 @@ jobs:
             name: polybot-config
             namespace: prod
           data:
-            TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "https://${{ inputs.app-url }}"
+            TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_prod }}"
+            ALB_URL: "polybot-service"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-prod-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-prod-${{ inputs.region-code }}-k8s-project"
@@ -195,11 +203,11 @@ jobs:
             name: filters-config
             namespace: dev
           data:
-            TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "https://${{ inputs.app-url }}"
+            TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_dev }}"
+            ALB_URL: "polybot-service"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-dev-${{ inputs.region-code }}-k8s-project"
-            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-dev-${{ inputs.region-code }}-k8s-project.fifo"
+            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
           EOF
           
           cat <<EOF > filters-prod-configmap.yaml
@@ -209,8 +217,8 @@ jobs:
             name: filters-config
             namespace: prod
           data:
-            TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "https://${{ inputs.app-url }}"
+            TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_prod }}"
+            ALB_URL: "polybot-service"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-prod-${{ inputs.region-code }}-k8s-project"
             FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
@@ -224,12 +232,12 @@ jobs:
             name: yolo-config
             namespace: dev
           data:
-            TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "https://${{ inputs.app-url }}"
+            TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_dev }}"
+            ALB_URL: "polybot-service"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-dev-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-dev-${{ inputs.region-code }}-k8s-project"
-            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-dev-${{ inputs.region-code }}-k8s-project.fifo"
+            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
           EOF
           
           cat <<EOF > yolo-prod-configmap.yaml
@@ -239,8 +247,8 @@ jobs:
             name: yolo-config
             namespace: prod
           data:
-            TELEGRAM_APP_URL: "https://${{ inputs.app-url }}"
-            ALB_URL: "https://${{ inputs.app-url }}"
+            TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_prod }}"
+            ALB_URL: "polybot-service"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-prod-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-prod-${{ inputs.region-code }}-k8s-project"
