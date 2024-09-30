@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: yaeli1/filters-microservice-dev:0.0.1
+        image: yaeli1/filters_t:0.0.1
         ports:
         - containerPort: 3001
         env:
@@ -46,6 +46,11 @@ spec:
               name: filters-config
               key: FILTERS_QUEUE_NAME
 
+        - name: CERT_PREFIX
+          valueFrom:
+            configMapKeyRef:
+              name: filters-config
+              key: CERT_PREFIX
 ---
 apiVersion: v1
 kind: Service

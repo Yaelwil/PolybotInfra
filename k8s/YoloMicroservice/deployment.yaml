@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: yaeli1/yolo5-microservice-prod:0.0.3
+        image: yaeli1/yolo_t:0.0.8
         ports:
         - containerPort: 3002
         env:
@@ -50,6 +50,12 @@ spec:
             configMapKeyRef:
               name: yolo-config
               key: YOLO_QUEUE_NAME
+
+        - name: CERT_PREFIX
+          valueFrom:
+            configMapKeyRef:
+              name: yolo-config
+              key: CERT_PREFIX
 ---
 apiVersion: v1
 kind: Service
