@@ -168,7 +168,7 @@ jobs:
             namespace: dev
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_dev }}"
-            ALB_URL: "polybot-service"
+            ALB_URL: "http://polybot-service:8443"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-dev-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-dev-${{ inputs.region-code }}-k8s-project"
@@ -186,7 +186,7 @@ jobs:
             namespace: prod
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_prod }}"
-            ALB_URL: "polybot-service"
+            ALB_URL: "http://polybot-service:8443"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-prod-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-prod-${{ inputs.region-code }}-k8s-project"
@@ -205,7 +205,7 @@ jobs:
             namespace: dev
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_dev }}"
-            ALB_URL: "polybot-service"
+            ALB_URL: "http://polybot-service:8443"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-dev-${{ inputs.region-code }}-k8s-project"
             FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
@@ -219,7 +219,7 @@ jobs:
             namespace: prod
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_prod }}"
-            ALB_URL: "polybot-service"
+            ALB_URL: "http://polybot-service:8443"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-prod-${{ inputs.region-code }}-k8s-project"
             FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
@@ -234,7 +234,7 @@ jobs:
             namespace: dev
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_dev }}"
-            ALB_URL: "polybot-service"
+            ALB_URL: "http://polybot-service:8443"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-dev-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-dev-${{ inputs.region-code }}-k8s-project"
@@ -249,7 +249,7 @@ jobs:
             namespace: prod
           data:
             TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_prod }}"
-            ALB_URL: "polybot-service"
+            ALB_URL: "http://polybot-service:8443"
             REGION: "${{ inputs.region-code }}"
             BUCKET_NAME: "yaelwil-bucket-prod-${{ inputs.region-code }}-k8s-project"
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-prod-${{ inputs.region-code }}-k8s-project"
