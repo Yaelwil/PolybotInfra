@@ -155,7 +155,8 @@ jobs:
         run: |
           # Ensure the namespace exists
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP \
-          "kubectl create namespace ${{ inputs.environment }}" || echo 'Namespace already exists'
+          "kubectl create namespace dev" || echo 'Namespace already exists'
+          "kubectl create namespace prod" || echo 'Namespace already exists'
 
           # Generate the ConfigMap YAML file
           
