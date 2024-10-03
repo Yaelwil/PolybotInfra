@@ -289,9 +289,9 @@ ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP"
 EOF
 
 if [ $? -eq 0 ]; then
-  echo -e "${GREEN}K8S dashboard, ArgoCD and Nginx ingress controller were installed${NC}"
+  echo -e "${GREEN}K8S dashboard, ArgoCD and Python packages were installed${NC}"
 else
-  echo -e "${RED}K8S dashboard, ArgoCD and Nginx ingress controller weren't installed${NC}"
+  echo -e "${RED}K8S dashboard, ArgoCD and Python packages weren't installed${NC}"
   exit 1
 fi
 done
