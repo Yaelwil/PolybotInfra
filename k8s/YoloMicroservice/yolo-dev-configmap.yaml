@@ -5,7 +5,7 @@ metadata:
   namespace: dev
 data:
   TELEGRAM_APP_URL: "https://yaelwil-dev.int-devops.click"
-  ALB_URL: "polybot-service"
+  ALB_URL: "http://polybot-service:8443"
   REGION: "us-east-2"
   BUCKET_NAME: "yaelwil-bucket-dev-us-east-2-k8s-project"
   DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-dev-us-east-2-k8s-project"

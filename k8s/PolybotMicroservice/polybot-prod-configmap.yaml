@@ -5,11 +5,11 @@ metadata:
   namespace: prod
 data:
   TELEGRAM_APP_URL: "https://yaelwil.int-devops.click"
-  ALB_URL: "polybot-service"
+  ALB_URL: "http://polybot-service:8443"
   REGION: "us-east-2"
   BUCKET_NAME: "yaelwil-bucket-prod-us-east-2-k8s-project"
   DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-prod-us-east-2-k8s-project"
   YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-prod-us-east-2-k8s-project.fifo"
   FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-us-east-2-k8s-project.fifo"
-  TELEGRAM_TOKEN: "<token>"
+  TELEGRAM_TOKEN: "<>"
   CERT_PREFIX: "yaelwil-certificate-prod-us-east-2"
