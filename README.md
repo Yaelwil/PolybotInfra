@@ -9,11 +9,13 @@ I have 4 steps to complete and 1 is optional-
 ## 1. Fully self-made k8s cluster:  
 - Manually provision a Kubernetes cluster with one control plane node and two worker nodes using Terraform and kubeadm. 
 - The nodes will run on Ubuntu and utilize CRI-O as the container runtime instead of Docker. 
-- Using terraform I created VPC, 2 Subnets, 3 EC2 instances (1 control plane + 2 worker nodes), 4 SQS Queues, 2 DynamoDB tables, Secrets Manager, 2 S3 Buckets, IAM Roles & Policies, Security Groups & ACLs and 2 Self-Signed Certificates.
+- Using terraform I created VPC, 2 Subnets, 3 EC2 instances (1 control plane + 2 worker nodes), 4 SQS Queues, 2 DynamoDB tables, Secrets Manager, 2 S3 Buckets, IAM Roles & Policies, Security Groups & ACLs and 2 Self-Signed Certificates.  
+Terraform explanation link: [Terraform](documentation/Terraform_README.md)
 
 ## 2. Service Deployment:  
 - Deployed the Polybot, Yolo, and Filters microservices in both Development and Production environments, ensuring logical separation using different namespaces and AWS resources. 
-- Using K8S Yamls I created LB (Ingress controller), Polybot pod, Yolo pod, Filters pod, configmap for each environment and microservice pod.
+- Using K8S Yamls I created LB (Ingress controller), Polybot pod, Yolo pod, Filters pod, configmap for each environment and microservice pod.  
+Kubernetes explanation link: [Kubernetes](documentation/K8S_README.md)
 
 ## 3. CI/CD Pipelines:
 Designed and implemented end-to-end CI/CD pipelines for multi-environment deployments using tools such as Jenkins, GitHub Actions, and ArgoCD.
