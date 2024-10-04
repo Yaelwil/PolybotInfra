@@ -55,11 +55,11 @@ spec:
             configMapKeyRef:
               name: polybot-config
               key: FILTERS_QUEUE_NAME
-        - name: TELEGRAM_TOKEN
+        - name: TELEGRAM_TOKEN_PREFIX
           valueFrom:
             configMapKeyRef:
               name: polybot-config
-              key: TELEGRAM_TOKEN
+              key: TELEGRAM_TOKEN_PREFIX
         - name: CERT_PREFIX
           valueFrom:
             configMapKeyRef:
