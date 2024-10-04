@@ -11,5 +11,5 @@ data:
   DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-dev-us-east-2-k8s-project"
   YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-dev-us-east-2-k8s-project.fifo"
   FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-dev-us-east-2-k8s-project.fifo"
-  TELEGRAM_TOKEN: "<>"
+  TELEGRAM_TOKEN_PREFIX: "yaelwil-telegram-token-dev-us-east-2-k8s-project"
   CERT_PREFIX: "yaelwil-certificate-dev-us-east-2"
