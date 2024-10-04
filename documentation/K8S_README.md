@@ -94,13 +94,13 @@ Allows traffic routing based on hostnames or paths, enabling multiple services t
 - TLS Termination:  
 Supports SSL/TLS termination, allowing secure communication over HTTPS.
 
-### Deployments
+## Deployments
 Deployments manage the deployment of pods, ensuring the desired number of pod replicas are running and facilitating rolling updates and rollbacks.
 
 Characteristics:  
 Simplifies scaling, updating, and managing the lifecycle of applications.
 
-### Namespaces
+## Namespaces
 Namespaces provide a way to divide cluster resources among multiple users or applications, useful for organizing resources and avoiding name collisions.
 
 Characteristics:
