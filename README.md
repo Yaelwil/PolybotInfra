@@ -20,12 +20,13 @@ Kubernetes explanation link: [Kubernetes](documentation/K8S_README.md)
 
 ## 3. CI/CD Pipelines:
 Designed and implemented end-to-end CI/CD pipelines for multi-environment deployments using tools such as Jenkins, GitHub Actions, and ArgoCD.
-  - Infrastructure Setup:  
+  - Infrastructure Setup (GitHub Actions):  
   Automated the setup of Terraform infrastructure and Kubernetes cluster configuration, including the generation of TLS secrets for Ingress connections, file management, and environment-specific customization.
-  - Branch-Specific Pipelines:  
+  - Branch-Specific Pipelines (Jenkins):  
   Developed branch-based CI pipelines in Jenkins, running tests (where applicable), and automating updates to YAML manifests for seamless deployment.
   - ArgoCD Integration:  
-  Established ArgoCD pipelines to continuously sync cluster state with YAML manifests, ensuring automated and version-controlled Kubernetes deployments.
+  Established ArgoCD pipelines to continuously sync cluster state with YAML manifests, ensuring automated and version-controlled Kubernetes deployments.  
+GitHub actions, Jenkins and ArgoCD explanation link: [GitHub_Actions_Jenkins_ArgoCD](documentation/GHA_Jen_ArgoCD_README.md)
 
 ## 4. Monitoring:
 - Logs:
