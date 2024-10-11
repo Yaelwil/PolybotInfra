@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: yaeli1/yolo5-microservice-prod:0.0.5
+        image: yaeli1/yolo5-microservice-prod:0.0.1
         ports:
         - containerPort: 3002
         env:
