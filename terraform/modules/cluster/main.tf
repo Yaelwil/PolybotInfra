@@ -47,3 +47,24 @@ resource "aws_instance" "worker_node" {
     k8s_version = var.k8s_version
   })
 }
+
+resource "aws_instance" "jenkins" {
+
+  ami                    = var.ubuntu_ami
+  instance_type          = var.instance_type
+  subnet_id              = var.public_subnet_ids[1]
+  key_name               = var.public_key_name
+  security_groups        = [aws_security_group.jenkins_sg.id]
+
+  tags = {
+    Name = "${var.owner_name}-jenkins-${var.region}-${var.project_name}"
+    Terraform = "true"
+  }
+
+  root_block_device {
+    volume_size = 20
+  }
+
+  user_data = templatefile("./modules/cluster/install_docker.sh", {
+  })
+}
