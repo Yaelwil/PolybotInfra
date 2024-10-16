@@ -1,0 +1,921 @@
+apiVersion: v1
+items:
+- apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    creationTimestamp: "2024-10-04T07:36:38Z"
+    generation: 693
+    name: filters-microservice-dev
+    namespace: argocd
+    resourceVersion: "781713"
+    uid: 5c030829-80d3-432d-bb5d-f34777307a23
+  spec:
+    destination:
+      namespace: dev
+      server: https://kubernetes.default.svc
+    project: default
+    source:
+      path: k8s/FiltersMicroservice
+      repoURL: https://github.com/Yaelwil/PolybotInfra
+      targetRevision: dev
+    syncPolicy:
+      automated: {}
+  status:
+    controllerNamespace: argocd
+    health:
+      status: Healthy
+    history:
+    - deployStartedAt: "2024-10-04T07:36:38Z"
+      deployedAt: "2024-10-04T07:36:39Z"
+      id: 0
+      initiatedBy:
+        automated: true
+      revision: b304a02f2a33c1c7c6a6e38336417d4baf10ffca
+      source:
+        path: k8s/FiltersMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: dev
+    - deployStartedAt: "2024-10-04T08:51:56Z"
+      deployedAt: "2024-10-04T08:51:57Z"
+      id: 1
+      initiatedBy:
+        automated: true
+      revision: 209412916d20a59d3a14ba010d1e2b8cfb94cee3
+      source:
+        path: k8s/FiltersMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: dev
+    - deployStartedAt: "2024-10-11T10:10:00Z"
+      deployedAt: "2024-10-11T10:10:01Z"
+      id: 2
+      initiatedBy:
+        automated: true
+      revision: a8308f21c7f3ad979c57891d02d986679edb0232
+      source:
+        path: k8s/FiltersMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: dev
+    operationState:
+      finishedAt: "2024-10-11T10:10:01Z"
+      message: successfully synced (all tasks run)
+      operation:
+        initiatedBy:
+          automated: true
+        retry:
+          limit: 5
+        sync:
+          revision: a8308f21c7f3ad979c57891d02d986679edb0232
+      phase: Succeeded
+      startedAt: "2024-10-11T10:10:00Z"
+      syncResult:
+        resources:
+        - group: ""
+          hookPhase: Running
+          kind: ConfigMap
+          message: configmap/filters-config unchanged
+          name: filters-config
+          namespace: dev
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: ""
+          hookPhase: Running
+          kind: Service
+          message: service/polybot-filters-service unchanged
+          name: polybot-filters-service
+          namespace: dev
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: apps
+          hookPhase: Running
+          kind: Deployment
+          message: deployment.apps/polybot-filters configured
+          name: polybot-filters
+          namespace: dev
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        revision: a8308f21c7f3ad979c57891d02d986679edb0232
+        source:
+          path: k8s/FiltersMicroservice
+          repoURL: https://github.com/Yaelwil/PolybotInfra
+          targetRevision: dev
+    reconciledAt: "2024-10-14T17:43:15Z"
+    resources:
+    - kind: ConfigMap
+      name: filters-config
+      namespace: dev
+      status: Synced
+      version: v1
+    - health:
+        status: Healthy
+      kind: Service
+      name: polybot-filters-service
+      namespace: dev
+      status: Synced
+      version: v1
+    - group: apps
+      health:
+        status: Healthy
+      kind: Deployment
+      name: polybot-filters
+      namespace: dev
+      status: Synced
+      version: v1
+    sourceType: Directory
+    summary:
+      images:
+      - yaeli1/filters-microservice-dev:0.0.5
+    sync:
+      comparedTo:
+        destination:
+          namespace: dev
+          server: https://kubernetes.default.svc
+        source:
+          path: k8s/FiltersMicroservice
+          repoURL: https://github.com/Yaelwil/PolybotInfra
+          targetRevision: dev
+      revision: ae3586be827086cd185d42617bd869f2f9802161
+      status: Synced
+- apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    creationTimestamp: "2024-10-04T07:38:16Z"
+    generation: 690
+    name: filters-microservice-prod
+    namespace: argocd
+    resourceVersion: "781710"
+    uid: aa108fdb-25de-400f-b6e7-0ae730c9b353
+  spec:
+    destination:
+      namespace: prod
+      server: https://kubernetes.default.svc
+    project: default
+    source:
+      path: k8s/FiltersMicroservice
+      repoURL: https://github.com/Yaelwil/PolybotInfra
+      targetRevision: main
+    syncPolicy:
+      automated: {}
+  status:
+    controllerNamespace: argocd
+    health:
+      status: Healthy
+    history:
+    - deployStartedAt: "2024-10-04T07:38:16Z"
+      deployedAt: "2024-10-04T07:38:17Z"
+      id: 0
+      initiatedBy:
+        automated: true
+      revision: fda060cd55614270dbfddb870baebadb3b593e22
+      source:
+        path: k8s/FiltersMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: main
+    - deployStartedAt: "2024-10-04T08:51:56Z"
+      deployedAt: "2024-10-04T08:51:57Z"
+      id: 1
+      initiatedBy:
+        automated: true
+      revision: b2b4703bbb196bb701e409e85e2b63beab7aae38
+      source:
+        path: k8s/FiltersMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: main
+    - deployStartedAt: "2024-10-04T08:52:58Z"
+      deployedAt: "2024-10-04T08:52:59Z"
+      id: 2
+      initiatedBy:
+        username: admin
+      revision: b2b4703bbb196bb701e409e85e2b63beab7aae38
+      source:
+        path: k8s/FiltersMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: main
+    - deployStartedAt: "2024-10-11T10:16:00Z"
+      deployedAt: "2024-10-11T10:16:03Z"
+      id: 3
+      initiatedBy:
+        automated: true
+      revision: d68efd170ba4665ab627f25db33d3e68eccf841e
+      source:
+        path: k8s/FiltersMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: main
+    operationState:
+      finishedAt: "2024-10-11T10:16:03Z"
+      message: successfully synced (all tasks run)
+      operation:
+        initiatedBy:
+          automated: true
+        retry:
+          limit: 5
+        sync:
+          revision: d68efd170ba4665ab627f25db33d3e68eccf841e
+      phase: Succeeded
+      startedAt: "2024-10-11T10:16:00Z"
+      syncResult:
+        resources:
+        - group: ""
+          hookPhase: Running
+          kind: ConfigMap
+          message: configmap/filters-config unchanged
+          name: filters-config
+          namespace: prod
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: ""
+          hookPhase: Running
+          kind: Service
+          message: service/polybot-filters-service unchanged
+          name: polybot-filters-service
+          namespace: prod
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: apps
+          hookPhase: Running
+          kind: Deployment
+          message: deployment.apps/polybot-filters configured
+          name: polybot-filters
+          namespace: prod
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        revision: d68efd170ba4665ab627f25db33d3e68eccf841e
+        source:
+          path: k8s/FiltersMicroservice
+          repoURL: https://github.com/Yaelwil/PolybotInfra
+          targetRevision: main
+    reconciledAt: "2024-10-14T17:43:15Z"
+    resources:
+    - kind: ConfigMap
+      name: filters-config
+      namespace: prod
+      status: Synced
+      version: v1
+    - health:
+        status: Healthy
+      kind: Service
+      name: polybot-filters-service
+      namespace: prod
+      status: Synced
+      version: v1
+    - group: apps
+      health:
+        status: Healthy
+      kind: Deployment
+      name: polybot-filters
+      namespace: prod
+      status: Synced
+      version: v1
+    sourceType: Directory
+    summary:
+      images:
+      - yaeli1/filters-microservice-prod:0.0.3
+    sync:
+      comparedTo:
+        destination:
+          namespace: prod
+          server: https://kubernetes.default.svc
+        source:
+          path: k8s/FiltersMicroservice
+          repoURL: https://github.com/Yaelwil/PolybotInfra
+          targetRevision: main
+      revision: 31bd0ff714fbb3eddc41107909d9871b9fbb3eff
+      status: Synced
+- apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    creationTimestamp: "2024-10-03T18:40:34Z"
+    generation: 846
+    name: polybot-microservice-dev
+    namespace: argocd
+    resourceVersion: "781712"
+    uid: 652f72c9-436e-4fc8-9c36-c6e47c5626d9
+  spec:
+    destination:
+      namespace: dev
+      server: https://kubernetes.default.svc
+    project: default
+    source:
+      path: k8s/PolybotMicroservice
+      repoURL: https://github.com/Yaelwil/PolybotInfra
+      targetRevision: dev
+    syncPolicy:
+      automated: {}
+  status:
+    controllerNamespace: argocd
+    health:
+      status: Healthy
+    history:
+    - deployStartedAt: "2024-10-03T18:48:29Z"
+      deployedAt: "2024-10-03T18:48:30Z"
+      id: 0
+      initiatedBy:
+        username: admin
+      revision: 055d718fd08844a2f605d62590d40e985f47b4d4
+      source:
+        path: k8s/PolybotMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: dev
+    - deployStartedAt: "2024-10-03T18:49:45Z"
+      deployedAt: "2024-10-03T18:49:46Z"
+      id: 1
+      initiatedBy:
+        username: admin
+      revision: 055d718fd08844a2f605d62590d40e985f47b4d4
+      source:
+        path: k8s/PolybotMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: dev
+    - deployStartedAt: "2024-10-04T06:44:43Z"
+      deployedAt: "2024-10-04T06:44:44Z"
+      id: 2
+      initiatedBy:
+        username: admin
+      revision: 055d718fd08844a2f605d62590d40e985f47b4d4
+      source:
+        path: k8s/PolybotMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: dev
+    - deployStartedAt: "2024-10-04T07:00:57Z"
+      deployedAt: "2024-10-04T07:00:58Z"
+      id: 3
+      initiatedBy:
+        automated: true
+      revision: 3897c15b7b15b6ab3c3b824534926570497569d4
+      source:
+        path: k8s/PolybotMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: dev
+    - deployStartedAt: "2024-10-04T07:04:02Z"
+      deployedAt: "2024-10-04T07:04:03Z"
+      id: 4
+      initiatedBy:
+        automated: true
+      revision: b304a02f2a33c1c7c6a6e38336417d4baf10ffca
+      source:
+        path: k8s/PolybotMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: dev
+    - deployStartedAt: "2024-10-10T13:58:36Z"
+      deployedAt: "2024-10-10T13:58:37Z"
+      id: 5
+      initiatedBy:
+        username: admin
+      revision: e1f55fe55342dda147636e06ea9a96f22447c303
+      source:
+        path: k8s/PolybotMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: dev
+    - deployStartedAt: "2024-10-11T10:09:59Z"
+      deployedAt: "2024-10-11T10:10:00Z"
+      id: 6
+      initiatedBy:
+        automated: true
+      revision: a8308f21c7f3ad979c57891d02d986679edb0232
+      source:
+        path: k8s/PolybotMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: dev
+    operationState:
+      finishedAt: "2024-10-11T10:10:00Z"
+      message: successfully synced (all tasks run)
+      operation:
+        initiatedBy:
+          automated: true
+        retry:
+          limit: 5
+        sync:
+          revision: a8308f21c7f3ad979c57891d02d986679edb0232
+      phase: Succeeded
+      startedAt: "2024-10-11T10:09:59Z"
+      syncResult:
+        resources:
+        - group: ""
+          hookPhase: Running
+          kind: ConfigMap
+          message: configmap/polybot-config unchanged
+          name: polybot-config
+          namespace: dev
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: ""
+          hookPhase: Running
+          kind: Service
+          message: service/polybot-service unchanged
+          name: polybot-service
+          namespace: dev
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: apps
+          hookPhase: Running
+          kind: Deployment
+          message: deployment.apps/polybot configured
+          name: polybot
+          namespace: dev
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: networking.k8s.io
+          hookPhase: Running
+          kind: Ingress
+          message: ingress.networking.k8s.io/polybot-ingress-dev unchanged
+          name: polybot-ingress-dev
+          namespace: dev
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        revision: a8308f21c7f3ad979c57891d02d986679edb0232
+        source:
+          path: k8s/PolybotMicroservice
+          repoURL: https://github.com/Yaelwil/PolybotInfra
+          targetRevision: dev
+    reconciledAt: "2024-10-14T17:43:15Z"
+    resources:
+    - kind: ConfigMap
+      name: polybot-config
+      namespace: dev
+      status: Synced
+      version: v1
+    - health:
+        status: Healthy
+      kind: Service
+      name: polybot-service
+      namespace: dev
+      status: Synced
+      version: v1
+    - group: apps
+      health:
+        status: Healthy
+      kind: Deployment
+      name: polybot
+      namespace: dev
+      status: Synced
+      version: v1
+    - group: networking.k8s.io
+      health:
+        status: Healthy
+      kind: Ingress
+      name: polybot-ingress-dev
+      namespace: dev
+      status: Synced
+      version: v1
+    sourceType: Directory
+    summary:
+      externalURLs:
+      - https://yaelwil-dev.int-devops.click/
+      images:
+      - yaeli1/polybot-microservice-dev:0.0.1
+    sync:
+      comparedTo:
+        destination:
+          namespace: dev
+          server: https://kubernetes.default.svc
+        source:
+          path: k8s/PolybotMicroservice
+          repoURL: https://github.com/Yaelwil/PolybotInfra
+          targetRevision: dev
+      revision: ae3586be827086cd185d42617bd869f2f9802161
+      status: Synced
+- apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    creationTimestamp: "2024-10-10T14:24:27Z"
+    generation: 277
+    name: polybot-microservice-prod
+    namespace: argocd
+    resourceVersion: "781709"
+    uid: faf13206-4ede-48ce-8ad7-ad06352b0619
+  spec:
+    destination:
+      namespace: prod
+      server: https://kubernetes.default.svc
+    project: default
+    source:
+      path: k8s/PolybotMicroservice
+      repoURL: https://github.com/Yaelwil/PolybotInfra
+      targetRevision: main
+    syncPolicy:
+      automated: {}
+  status:
+    controllerNamespace: argocd
+    health:
+      status: Healthy
+    history:
+    - deployStartedAt: "2024-10-10T16:21:21Z"
+      deployedAt: "2024-10-10T16:21:24Z"
+      id: 0
+      initiatedBy:
+        username: admin
+      revision: 0b71c6a5dd5235a90445f796fbbe897fc200596e
+      source:
+        path: k8s/PolybotMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: main
+    - deployStartedAt: "2024-10-11T10:15:59Z"
+      deployedAt: "2024-10-11T10:16:01Z"
+      id: 1
+      initiatedBy:
+        automated: true
+      revision: d68efd170ba4665ab627f25db33d3e68eccf841e
+      source:
+        path: k8s/PolybotMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: main
+    operationState:
+      finishedAt: "2024-10-11T10:16:01Z"
+      message: successfully synced (all tasks run)
+      operation:
+        initiatedBy:
+          automated: true
+        retry:
+          limit: 5
+        sync:
+          revision: d68efd170ba4665ab627f25db33d3e68eccf841e
+      phase: Succeeded
+      startedAt: "2024-10-11T10:15:59Z"
+      syncResult:
+        resources:
+        - group: ""
+          hookPhase: Running
+          kind: ConfigMap
+          message: configmap/polybot-config unchanged
+          name: polybot-config
+          namespace: prod
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: ""
+          hookPhase: Running
+          kind: Service
+          message: service/polybot-service unchanged
+          name: polybot-service
+          namespace: prod
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: apps
+          hookPhase: Running
+          kind: Deployment
+          message: deployment.apps/polybot configured
+          name: polybot
+          namespace: prod
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: networking.k8s.io
+          hookPhase: Running
+          kind: Ingress
+          message: ingress.networking.k8s.io/polybot-ingress-prod unchanged
+          name: polybot-ingress-prod
+          namespace: prod
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        revision: d68efd170ba4665ab627f25db33d3e68eccf841e
+        source:
+          path: k8s/PolybotMicroservice
+          repoURL: https://github.com/Yaelwil/PolybotInfra
+          targetRevision: main
+    reconciledAt: "2024-10-14T17:43:15Z"
+    resources:
+    - kind: ConfigMap
+      name: polybot-config
+      namespace: prod
+      status: Synced
+      version: v1
+    - health:
+        status: Healthy
+      kind: Service
+      name: polybot-service
+      namespace: prod
+      status: Synced
+      version: v1
+    - group: apps
+      health:
+        status: Healthy
+      kind: Deployment
+      name: polybot
+      namespace: prod
+      status: Synced
+      version: v1
+    - group: networking.k8s.io
+      health:
+        status: Healthy
+      kind: Ingress
+      name: polybot-ingress-prod
+      namespace: prod
+      status: Synced
+      version: v1
+    sourceType: Directory
+    summary:
+      externalURLs:
+      - https://yaelwil.int-devops.click/
+      images:
+      - yaeli1/polybot-microservice-prod:0.0.1
+    sync:
+      comparedTo:
+        destination:
+          namespace: prod
+          server: https://kubernetes.default.svc
+        source:
+          path: k8s/PolybotMicroservice
+          repoURL: https://github.com/Yaelwil/PolybotInfra
+          targetRevision: main
+      revision: 31bd0ff714fbb3eddc41107909d9871b9fbb3eff
+      status: Synced
+- apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    creationTimestamp: "2024-10-04T07:39:18Z"
+    generation: 690
+    name: yolo-microservice-dev
+    namespace: argocd
+    resourceVersion: "781711"
+    uid: c5273b0c-8068-462b-bac9-1b2d63cf3979
+  spec:
+    destination:
+      namespace: dev
+      server: https://kubernetes.default.svc
+    project: default
+    source:
+      path: k8s/YoloMicroservice
+      repoURL: https://github.com/Yaelwil/PolybotInfra
+      targetRevision: dev
+    syncPolicy:
+      automated: {}
+  status:
+    controllerNamespace: argocd
+    health:
+      status: Healthy
+    history:
+    - deployStartedAt: "2024-10-04T07:39:18Z"
+      deployedAt: "2024-10-04T07:39:19Z"
+      id: 0
+      initiatedBy:
+        automated: true
+      revision: b304a02f2a33c1c7c6a6e38336417d4baf10ffca
+      source:
+        path: k8s/YoloMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: dev
+    - deployStartedAt: "2024-10-04T08:39:57Z"
+      deployedAt: "2024-10-04T08:39:57Z"
+      id: 1
+      initiatedBy:
+        automated: true
+      revision: 1a40f9c787cc02d66429362aab4a1c7624b63576
+      source:
+        path: k8s/YoloMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: dev
+    - deployStartedAt: "2024-10-11T10:16:00Z"
+      deployedAt: "2024-10-11T10:16:03Z"
+      id: 2
+      initiatedBy:
+        automated: true
+      revision: 2d9e45af6b7f6a7dac9fd8b2cc89c1a9f2d90481
+      source:
+        path: k8s/YoloMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: dev
+    operationState:
+      finishedAt: "2024-10-11T10:16:03Z"
+      message: successfully synced (all tasks run)
+      operation:
+        initiatedBy:
+          automated: true
+        retry:
+          limit: 5
+        sync:
+          revision: 2d9e45af6b7f6a7dac9fd8b2cc89c1a9f2d90481
+      phase: Succeeded
+      startedAt: "2024-10-11T10:16:00Z"
+      syncResult:
+        resources:
+        - group: ""
+          hookPhase: Running
+          kind: ConfigMap
+          message: configmap/yolo-config unchanged
+          name: yolo-config
+          namespace: dev
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: ""
+          hookPhase: Running
+          kind: Service
+          message: service/polybot-yolo-service unchanged
+          name: polybot-yolo-service
+          namespace: dev
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: apps
+          hookPhase: Running
+          kind: Deployment
+          message: deployment.apps/polybot-yolo configured
+          name: polybot-yolo
+          namespace: dev
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        revision: 2d9e45af6b7f6a7dac9fd8b2cc89c1a9f2d90481
+        source:
+          path: k8s/YoloMicroservice
+          repoURL: https://github.com/Yaelwil/PolybotInfra
+          targetRevision: dev
+    reconciledAt: "2024-10-14T17:43:15Z"
+    resources:
+    - kind: ConfigMap
+      name: yolo-config
+      namespace: dev
+      status: Synced
+      version: v1
+    - health:
+        status: Healthy
+      kind: Service
+      name: polybot-yolo-service
+      namespace: dev
+      status: Synced
+      version: v1
+    - group: apps
+      health:
+        status: Healthy
+      kind: Deployment
+      name: polybot-yolo
+      namespace: dev
+      status: Synced
+      version: v1
+    sourceType: Directory
+    summary:
+      images:
+      - yaeli1/yolo5-microservice-dev:0.0.1
+    sync:
+      comparedTo:
+        destination:
+          namespace: dev
+          server: https://kubernetes.default.svc
+        source:
+          path: k8s/YoloMicroservice
+          repoURL: https://github.com/Yaelwil/PolybotInfra
+          targetRevision: dev
+      revision: ae3586be827086cd185d42617bd869f2f9802161
+      status: Synced
+- apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    creationTimestamp: "2024-10-04T07:41:22Z"
+    generation: 687
+    name: yolo-microservice-prod
+    namespace: argocd
+    resourceVersion: "781705"
+    uid: 21fd976b-8929-4504-ade5-faf27154dd08
+  spec:
+    destination:
+      namespace: prod
+      server: https://kubernetes.default.svc
+    project: default
+    source:
+      path: k8s/YoloMicroservice
+      repoURL: https://github.com/Yaelwil/PolybotInfra
+      targetRevision: main
+    syncPolicy:
+      automated: {}
+  status:
+    controllerNamespace: argocd
+    health:
+      status: Healthy
+    history:
+    - deployStartedAt: "2024-10-04T07:41:22Z"
+      deployedAt: "2024-10-04T07:41:23Z"
+      id: 0
+      initiatedBy:
+        automated: true
+      revision: fda060cd55614270dbfddb870baebadb3b593e22
+      source:
+        path: k8s/YoloMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: main
+    - deployStartedAt: "2024-10-04T08:45:57Z"
+      deployedAt: "2024-10-04T08:45:58Z"
+      id: 1
+      initiatedBy:
+        automated: true
+      revision: 2f321c1b02239f109ca63e08a4a22cef83445d8c
+      source:
+        path: k8s/YoloMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: main
+    - deployStartedAt: "2024-10-04T08:53:30Z"
+      deployedAt: "2024-10-04T08:53:31Z"
+      id: 2
+      initiatedBy:
+        username: admin
+      revision: b2b4703bbb196bb701e409e85e2b63beab7aae38
+      source:
+        path: k8s/YoloMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: main
+    - deployStartedAt: "2024-10-11T10:16:00Z"
+      deployedAt: "2024-10-11T10:16:02Z"
+      id: 3
+      initiatedBy:
+        automated: true
+      revision: d68efd170ba4665ab627f25db33d3e68eccf841e
+      source:
+        path: k8s/YoloMicroservice
+        repoURL: https://github.com/Yaelwil/PolybotInfra
+        targetRevision: main
+    operationState:
+      finishedAt: "2024-10-11T10:16:02Z"
+      message: successfully synced (all tasks run)
+      operation:
+        initiatedBy:
+          automated: true
+        retry:
+          limit: 5
+        sync:
+          revision: d68efd170ba4665ab627f25db33d3e68eccf841e
+      phase: Succeeded
+      startedAt: "2024-10-11T10:16:00Z"
+      syncResult:
+        resources:
+        - group: ""
+          hookPhase: Running
+          kind: ConfigMap
+          message: configmap/yolo-config unchanged
+          name: yolo-config
+          namespace: prod
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: ""
+          hookPhase: Running
+          kind: Service
+          message: service/polybot-yolo-service unchanged
+          name: polybot-yolo-service
+          namespace: prod
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: apps
+          hookPhase: Running
+          kind: Deployment
+          message: deployment.apps/polybot-yolo configured
+          name: polybot-yolo
+          namespace: prod
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        revision: d68efd170ba4665ab627f25db33d3e68eccf841e
+        source:
+          path: k8s/YoloMicroservice
+          repoURL: https://github.com/Yaelwil/PolybotInfra
+          targetRevision: main
+    reconciledAt: "2024-10-14T17:43:15Z"
+    resources:
+    - kind: ConfigMap
+      name: yolo-config
+      namespace: prod
+      status: Synced
+      version: v1
+    - health:
+        status: Healthy
+      kind: Service
+      name: polybot-yolo-service
+      namespace: prod
+      status: Synced
+      version: v1
+    - group: apps
+      health:
+        status: Healthy
+      kind: Deployment
+      name: polybot-yolo
+      namespace: prod
+      status: Synced
+      version: v1
+    sourceType: Directory
+    summary:
+      images:
+      - yaeli1/yolo5-microservice-prod:0.0.1
+    sync:
+      comparedTo:
+        destination:
+          namespace: prod
+          server: https://kubernetes.default.svc
+        source:
+          path: k8s/YoloMicroservice
+          repoURL: https://github.com/Yaelwil/PolybotInfra
+          targetRevision: main
+      revision: 31bd0ff714fbb3eddc41107909d9871b9fbb3eff
+      status: Synced
+kind: List
+metadata:
+  resourceVersion: ""

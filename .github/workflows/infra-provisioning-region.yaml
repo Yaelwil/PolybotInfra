@@ -70,26 +70,52 @@ jobs:
               --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
               --output json)
           
-          # Extract Control Plane IPs
-          CONTROL_PLANE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[2]')          
+          # Extract Control Plane IP-
+          CONTROL_PLANE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[2]')  
+          # Extract Control Plane ID-
           INSTANCE_CP_ID=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[0]')
+          
           echo "CONTROL_PLANE_IP=$CONTROL_PLANE_IP" >> $GITHUB_ENV
           echo "INSTANCE_CP_ID=$INSTANCE_CP_ID" >> $GITHUB_ENV
 
-      - name: Get the worker node ip
+      - name: Get the worker node IPs and IDs
         run: |
-          EC2_WORKER_NODE=$(aws ec2 describe-instances --region ${{ inputs.region-code }} \
-              --filters "Name=tag:Name,Values=*control-plane*" \
+          EC2_WORKER_NODES=$(aws ec2 describe-instances --region ${{ inputs.region-code }} \
+              --filters "Name=tag:Name,Values=*worker-node*" \
                         "Name=tag:Name,Values=*yaelwil*" \
                         "Name=tag:Name,Values=*k8s-project*" \
               --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
               --output json)
           
-          # Extract Worker Nodes IPs
-          WORKER_NODE_IP=$(echo "$EC2_CONTROL_PLANE" | jq -r '.[][] | select(.[1] == "running") | .[0]')
-          echo "CONTROL_PLANE_IP=$CONTROL_PLANE_IP" >> $GITHUB_ENV
+          # Extract Worker Node IPs and IDs
+          WORKER_NODE_IPS=$(echo "$EC2_WORKER_NODES" | jq -r '.[][] | select(.[1] == "running") | .[2]')
+          WORKER_NODE_IDS=$(echo "$EC2_WORKER_NODES" | jq -r '.[][] | select(.[1] == "running") | .[0]')
+          
+          # Convert IPs and IDs to newline-separated strings
+          WORKER_NODE_IPS_LIST=$(echo "$WORKER_NODE_IPS" | tr '\n' ' ')
+          WORKER_NODE_IDS_LIST=$(echo "$WORKER_NODE_IDS" | tr '\n' ' ')
+          
+          echo "WORKER_NODE_IPS=$WORKER_NODE_IPS_LIST" >> $GITHUB_ENV
+          echo "WORKER_NODE_IDS=$WORKER_NODE_IDS_LIST" >> $GITHUB_ENV
 
-      - name: Wait for Control Plane and Worker Node Instances Status
+      - name: Get jenkins node ip
+        run: |
+          EC2_JENKINS_NODE=$(aws ec2 describe-instances --region ${{ inputs.region-code }} \
+              --filters "Name=tag:Name,Values=*jenkins*" \
+                        "Name=tag:Name,Values=*yaelwil*" \
+                        "Name=tag:Name,Values=*k8s-project*" \
+              --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' \
+              --output json)
+          
+          # Extract Jenkins Node IP-
+          JENKINS_NODE_IP=$(echo "$EC2_JENKINS_NODE" | jq -r '.[][] | select(.[1] == "running") | .[2]')  
+          # Extract Jenkins Node ID-
+          JENKINS_NODE_ID=$(echo "$EC2_JENKINS_NODE" | jq -r '.[][] | select(.[1] == "running") | .[0]')
+          
+          echo "JENKINS_NODE_IP=$JENKINS_NODE_IP" >> $GITHUB_ENV
+          echo "JENKINS_NODE_ID=$JENKINS_NODE_ID" >> $GITHUB_ENV
+          
+      - name: Wait for Control Plane, Worker Node and Jenkins node Instances Status
         run: |
           # Wait for Control Plane instance to be OK
           aws ec2 wait instance-status-ok --instance-ids "$INSTANCE_CP_ID" --region ${{ inputs.region-code }}
@@ -98,12 +124,17 @@ jobs:
           for instance_id in $INSTANCE_WN_IDS; do
             aws ec2 wait instance-status-ok --instance-ids "$instance_id" --region ${{ inputs.region-code }}
           done
+          
+          # Wait for jenkins instance to be OK
+          aws ec2 wait instance-status-ok --instance-ids "$JENKINS_NODE_ID" --region ${{ inputs.region-code }}
+        
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           INSTANCE_CP_ID: ${{ env.INSTANCE_CP_ID }}
-          INSTANCE_WN_IDS: ${{ env.WORKER_NODE_ID }}
-
+          INSTANCE_WN_IDS: ${{ env.WORKER_NODE_IDS }}
+          JENKINS_NODE_ID: ${{ env.JENKINS_NODE_ID }}
+          
       - name: Set private key for connection
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > yaelwil-private-key.pem
@@ -150,127 +181,10 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP << EOF
             kubectl apply -f ~/k8s/deploy.yaml
           EOF
-
-      - name: ConfigMap creation and copy
+          
+      - name: ArgoCD configurations
         run: |
-          # Ensure the namespace exists
-          ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP \
-          "kubectl create namespace dev" || echo 'Namespace already exists'
-          "kubectl create namespace prod" || echo 'Namespace already exists'
-
-          # Generate the ConfigMap YAML file
-          
-          cat <<EOF > polybot-dev-configmap.yaml
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            name: polybot-config
-            namespace: dev
-          data:
-            TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_dev }}"
-            ALB_URL: "http://polybot-service:8443"
-            REGION: "${{ inputs.region-code }}"
-            BUCKET_NAME: "yaelwil-bucket-dev-${{ inputs.region-code }}-k8s-project"
-            DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-dev-${{ inputs.region-code }}-k8s-project"
-            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
-            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
-            TELEGRAM_TOKEN_PREFIX: "yaelwil-telegram-token-dev-eu-west-1-k8s-project"
-            CERT_PREFIX: "yaelwil-certificate-dev-${{ inputs.region-code }}"
-          EOF
-          
-          cat <<EOF > polybot-prod-configmap.yaml
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            name: polybot-config
-            namespace: prod
-          data:
-            TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_prod }}"
-            ALB_URL: "http://polybot-service:8443"
-            REGION: "${{ inputs.region-code }}"
-            BUCKET_NAME: "yaelwil-bucket-prod-${{ inputs.region-code }}-k8s-project"
-            DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-prod-${{ inputs.region-code }}-k8s-project"
-            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
-            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
-            TELEGRAM_TOKEN_PREFIX: "yaelwil-telegram-token-prod-eu-west-1-k8s-project"
-            CERT_PREFIX: "yaelwil-certificate-prod-${{ inputs.region-code }}"
-          EOF
-
-          # Generate the ConfigMap YAML file
-          cat <<EOF > filters-dev-configmap.yaml
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            name: filters-config
-            namespace: dev
-          data:
-            TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_dev }}"
-            ALB_URL: "http://polybot-service:8443"
-            REGION: "${{ inputs.region-code }}"
-            BUCKET_NAME: "yaelwil-bucket-dev-${{ inputs.region-code }}-k8s-project"
-            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
-            CERT_PREFIX: "yaelwil-certificate-dev-${{ inputs.region-code }}"
-          EOF
-          
-          cat <<EOF > filters-prod-configmap.yaml
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            name: filters-config
-            namespace: prod
-          data:
-            TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_prod }}"
-            ALB_URL: "http://polybot-service:8443"
-            REGION: "${{ inputs.region-code }}"
-            BUCKET_NAME: "yaelwil-bucket-prod-${{ inputs.region-code }}-k8s-project"
-            FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
-            CERT_PREFIX: "yaelwil-certificate-prod-${{ inputs.region-code }}"
-          EOF
-
-          # Generate the ConfigMap YAML file
-          cat <<EOF > yolo-dev-configmap.yaml
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            name: yolo-config
-            namespace: dev
-          data:
-            TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_dev }}"
-            ALB_URL: "http://polybot-service:8443"
-            REGION: "${{ inputs.region-code }}"
-            BUCKET_NAME: "yaelwil-bucket-dev-${{ inputs.region-code }}-k8s-project"
-            DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-dev-${{ inputs.region-code }}-k8s-project"
-            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
-            CERT_PREFIX: "yaelwil-certificate-dev-${{ inputs.region-code }}"
-          EOF
-          
-          cat <<EOF > yolo-prod-configmap.yaml
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            name: yolo-config
-            namespace: prod
-          data:
-            TELEGRAM_APP_URL: "https://${{ inputs.telegram_app_url_prod }}"
-            ALB_URL: "http://polybot-service:8443"
-            REGION: "${{ inputs.region-code }}"
-            BUCKET_NAME: "yaelwil-bucket-prod-${{ inputs.region-code }}-k8s-project"
-            DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-prod-${{ inputs.region-code }}-k8s-project"
-            YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
-            CERT_PREFIX: "yaelwil-certificate-prod-${{ inputs.region-code }}"
-          EOF
-
-          # Securely copy files to the remote server
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" filters-dev-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/FiltersMicroservice
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" filters-prod-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/FiltersMicroservice
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" polybot-dev-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/PolybotMicroservice
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" polybot-prod-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/PolybotMicroservice
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" yolo-dev-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/YoloMicroservice
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" yolo-prod-configmap.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/YoloMicroservice
-
-          # Clean up the private key
-          rm yaelwil-private-key.pem
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ~/k8s/ArgoCD/application.yaml ubuntu@$CONTROL_PLANE_IP:~/k8s/ArgoCD
+          kubectl apply -n argocd application.yaml
         env:
           CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
-          TELEGRAM_TOKEN_DEV: ${{ secrets.TELEGRAM_TOKEN_DEV }}
-          TELEGRAM_TOKEN_PROD: ${{ secrets.TELEGRAM_TOKEN_PROD  }}
