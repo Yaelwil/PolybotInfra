@@ -185,7 +185,7 @@ jobs:
       - name: ArgoCD configurations
         run: |
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP << EOF
-            kubectl apply -n argocd -f ~/k8s/ArgoCD/application.yaml
+            kubectl apply -n argocd -f ~/PolybotInfra/k8s/ArgoCD/application.yaml
           EOF
         env:
           CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
