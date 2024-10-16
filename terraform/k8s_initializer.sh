@@ -381,6 +381,9 @@ ES_CONF
       name: quickstart
 KIBANA_CONF
 
+  # Ensure the 'monitoring' namespace exists
+  kubectl create namespace monitoring || echo "Namespace 'monitoring' already exists"
+
   # Add the Prometheus Helm chart repository
   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
@@ -390,12 +393,11 @@ KIBANA_CONF
   # Update the repositories to make sure you have the latest version of the charts
   helm repo update
 
-  # Install Prometheus using Helm
-  helm install prometheus prometheus-community/prometheus
+  # Install Prometheus using Helm in the 'monitoring' namespace
+  helm install prometheus prometheus-community/prometheus --namespace monitoring
 
-  # Install Grafana using Helm
-  helm install grafana grafana/grafana
-
+  # Install Grafana using Helm in the 'monitoring' namespace
+  helm install grafana grafana/grafana --namespace monitoring
 EOF
 
 
