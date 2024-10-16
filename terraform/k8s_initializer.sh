@@ -183,7 +183,7 @@ done
   # Connect to the Control Plane node and perform initialization
   ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
     # Install Flannel CNI plugin
-    kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+    kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.2/manifests/calico.yaml
 
     # Install AWS Cloud Controller Manager
     kubectl apply -k 'github.com/kubernetes/cloud-provider-aws/examples/existing-cluster/base/?ref=master'
@@ -295,6 +295,7 @@ fi
 ######################################################################
 
 ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
+  echo "Installing monitoring tools..."
   # Create or overwrite fluent-values.yaml
   cat <<EOF > fluent-values.yaml
   env:
