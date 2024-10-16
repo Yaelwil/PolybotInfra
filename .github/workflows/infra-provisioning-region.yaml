@@ -174,7 +174,7 @@ jobs:
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-dev-${{ inputs.region-code }}-k8s-project"
             YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
             FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
-            TELEGRAM_TOKEN_PREFIX: "yaelwil-telegram-token-dev"
+            TELEGRAM_TOKEN_PREFIX: "yaelwil-telegram-token-dev-eu-west-1-k8s-project"
             CERT_PREFIX: "yaelwil-certificate-dev-${{ inputs.region-code }}"
           EOF
           
@@ -192,7 +192,7 @@ jobs:
             DYNAMODB_TABLE_NAME: "yaelwil-dynamodb-table-prod-${{ inputs.region-code }}-k8s-project"
             YOLO_QUEUE_NAME: "yaelwil-yolov5-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
             FILTERS_QUEUE_NAME: "yaelwil-filters-sqs-queue-prod-${{ inputs.region-code }}-k8s-project.fifo"
-            TELEGRAM_TOKEN_PREFIX: "yaelwil-telegram-token-prod"
+            TELEGRAM_TOKEN_PREFIX: "yaelwil-telegram-token-prod-eu-west-1-k8s-project"
             CERT_PREFIX: "yaelwil-certificate-prod-${{ inputs.region-code }}"
           EOF
 
