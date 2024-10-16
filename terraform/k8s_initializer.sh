@@ -190,9 +190,9 @@ done
 EOF
 
   if [ $? -eq 0 ]; then
-    echo -e "${GREEN}Flannel and AWS Cloud Controller Manager was installed ($CONTROL_PLANE_IP).${NC}"
+    echo -e "${GREEN}Calico and AWS Cloud Controller Manager was installed ($CONTROL_PLANE_IP).${NC}"
   else
-    echo -e "${RED}Flannel and AWS Cloud Controller Manager wasn't installed ($CONTROL_PLANE_IP).${NC}"
+    echo -e "${RED}Calico and AWS Cloud Controller Manager wasn't installed ($CONTROL_PLANE_IP).${NC}"
     exit 1
   fi
 
@@ -294,10 +294,11 @@ fi
 # Install Fluent-bit, Elastic Search, kibana, Prometheus and Grafana #
 ######################################################################
 
-ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
+ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << 'EOF'
   echo "Installing monitoring tools..."
+
   # Create or overwrite fluent-values.yaml
-  cat <<EOF > fluent-values.yaml
+  cat <<FLUENT_CONF > fluent-values.yaml
   env:
     - name: ELASTIC_URL
       value: quickstart-es-http   # TODO change according to your elastic service address
@@ -337,7 +338,7 @@ ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP"
           tls On
           tls.verify Off
           Replace_Dots On
-  EOF
+FLUENT_CONF
 
   # Add the Fluent Helm repo
   helm repo add fluent https://fluent.github.io/helm-charts
@@ -353,7 +354,7 @@ ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP"
   kubectl create -f https://download.elastic.co/downloads/eck/2.13.0/crds.yaml
   kubectl apply -f https://download.elastic.co/downloads/eck/2.13.0/operator.yaml
 
-  cat <<EOF | kubectl apply -f -
+  cat <<ES_CONF | kubectl apply -f -
   apiVersion: elasticsearch.k8s.elastic.co/v1
   kind: Elasticsearch
   metadata:
@@ -365,11 +366,10 @@ ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP"
       count: 1
       config:
         node.store.allow_mmap: false
-  EOF
+ES_CONF
 
-  # Install kibana
-
-  cat <<EOF | kubectl apply -f -
+  # Install Kibana
+  cat <<KIBANA_CONF | kubectl apply -f -
   apiVersion: kibana.k8s.elastic.co/v1
   kind: Kibana
   metadata:
@@ -379,8 +379,7 @@ ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP"
     count: 1
     elasticsearchRef:
       name: quickstart
-  EOF
-
+KIBANA_CONF
 
   # Add the Prometheus Helm chart repository
   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -398,6 +397,7 @@ ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP"
   helm install grafana grafana/grafana
 
 EOF
+
 
 if [ $? -eq 0 ]; then
   echo -e "${GREEN}Fluent-bit, Elastic Search, kibana, Prometheus and Grafana were installed${NC}"
