@@ -202,7 +202,7 @@ jobs:
 
       - name: Jenkins configurations
         run: |
-          ssh -o StrictHostKeyChecking=no -i "./k8s/yaelwil-private-key.pem" ubuntu@$JENKINS_NODE_IP << EOF
+          ssh -o StrictHostKeyChecking=no -i "../k8s/yaelwil-private-key.pem" ubuntu@$JENKINS_NODE_IP << EOF
             cd jenkins_docker
             docker-compose up -d
           EOF
