@@ -1,0 +1,10 @@
+commit 7456f6ad7578b0a6f63d093941a594c0eae607d3
+tree e9d242a442cc78075ab7be030f7702a56b08acb0
+parent 0b71c6a5dd5235a90445f796fbbe897fc200596e
+author Your Name <you@example.com> 2024-10-11 10:12:26 +0000
+committer Your Name <you@example.com> 2024-10-11 10:12:26 +0000
+
+    Jenkins deploy FiltersMicroservice yaeli1/filters-microservice-prod:0.0.3
+
+
+:100644 100644 fad4c9fd6f46e2c54eca2624108fd95c326ce1fd 822a268e843732ea4bbfb3373c6a0dc9018a1ea1 M	k8s/FiltersMicroservice/deployment.yaml
