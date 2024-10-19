@@ -193,9 +193,9 @@ jobs:
           
       - name: ArgoCD configurations
         run: |
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ./ArgoCD/application.yaml ubuntu@$CONTROL_PLANE_IP:~/
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ./ArgoCD/applications.yaml ubuntu@$CONTROL_PLANE_IP:~/
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP << EOF
-            kubectl apply -n argocd -f ~/application.yaml
+            kubectl apply -n argocd -f ~/applications.yaml
           EOF
         working-directory: k8s
         env:
