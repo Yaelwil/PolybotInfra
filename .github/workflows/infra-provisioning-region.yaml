@@ -184,6 +184,7 @@ jobs:
 
       - name: Install Ingress Controller
         run: |
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ./deploy.yaml ubuntu@$CONTROL_PLANE_IP:~/
           # SSH into the control plane to install ingress controller
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP << EOF
             kubectl apply -f ./deploy.yaml
