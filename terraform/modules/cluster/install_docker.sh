@@ -26,6 +26,6 @@ sudo systemctl enable docker
 
 # Add current user to the Docker group
 sudo usermod -aG docker $USER
-
+newgrp docker
 # Reboot the system
-sudo reboot
+# sudo reboot
