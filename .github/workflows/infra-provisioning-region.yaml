@@ -32,12 +32,11 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    defaults:
-      run:
-        working-directory: terraform  # The directory containing your Terraform configuration files
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          path: ./  # Checkout at the root level
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
@@ -46,20 +45,25 @@ jobs:
 
       - name: Terraform init
         run: terraform init
+        working-directory: terraform
 
       - name: Terraform workspace select
         run: terraform workspace select ${{ inputs.region-code }} || terraform workspace new ${{ inputs.region-code }}
+        working-directory: terraform
 
       - name: Terraform validate
         run: terraform validate
+        working-directory: terraform
 
       - name: Terraform plan
         run: | 
           terraform plan -var-file=region.${{ inputs.region-code }}.tfvars
+        working-directory: terraform
 
       - name: Terraform apply
         run: |
           terraform apply -auto-approve -var-file=region.${{ inputs.region-code }}.tfvars
+        working-directory: terraform
 
       - name: Get the control plane ip
         run: |
@@ -146,13 +150,14 @@ jobs:
           export SSH_PRIVATE_KEY="${{ secrets.SSH_PRIVATE_KEY }}"
           chmod +x k8s_initializer.sh
           ./k8s_initializer.sh
+        working-directory: terraform
         env:
           CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
           
       - name: TLS secret creation
         run: |
           # Copy necessary files to the control plane
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ../k8s ubuntu@$CONTROL_PLANE_IP:~/k8s
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ./ingress_setup.py ubuntu@$CONTROL_PLANE_IP:~/
           
           # SSH into the control plane to execute the TLS secret creation
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP << EOF
@@ -172,21 +177,24 @@ jobs:
             source ~/myenv/bin/activate
             
             # Run the Python script for ingress setup on the control plane
-            python3 ~/k8s/ingress_setup.py
+            python3 ~/ingress_setup.py
           EOF
+        working-directory: k8s
 
       - name: Install Ingress Controller
         run: |
           # SSH into the control plane to install ingress controller
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP << EOF
-            kubectl apply -f ~/k8s/deploy.yaml
+            kubectl apply -f ~/deploy.yaml
           EOF
+        working-directory: k8s
           
       - name: ArgoCD configurations
         run: |
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ../k8s/ArgoCD/application.yaml ubuntu@$CONTROL_PLANE_IP:~/
+          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ./ArgoCD/application.yaml ubuntu@$CONTROL_PLANE_IP:~/
           ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$CONTROL_PLANE_IP << EOF
             kubectl apply -n argocd -f ~/application.yaml
           EOF
+        working-directory: k8s
         env:
           CONTROL_PLANE_IP: ${{ env.CONTROL_PLANE_IP }}
