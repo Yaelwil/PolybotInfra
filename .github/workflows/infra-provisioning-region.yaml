@@ -200,11 +200,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build and push
+      - name: Jenkins configurations
         run: |
-          ssh -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" ubuntu@$JENKINS_NODE_IP << EOF
+          ssh -o StrictHostKeyChecking=no -i "./k8s/yaelwil-private-key.pem" ubuntu@$JENKINS_NODE_IP << EOF
             cd jenkins_docker
-            docker-compose build
             docker-compose up -d
           EOF
         working-directory: jenkins_docker
