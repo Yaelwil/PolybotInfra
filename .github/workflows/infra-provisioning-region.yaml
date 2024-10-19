@@ -204,11 +204,24 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i "../k8s/yaelwil-private-key.pem" ubuntu@$JENKINS_NODE_IP << EOF
             cd jenkins_docker
-            docker-compose up -d
+            sudo docker compose up -d
+            
+            # Extract Jenkins secret and Docker group ID
+            JENKINS_SECRET=\$(sudo docker exec jenkins_docker-jenkins-1 cat /var/jenkins_home/secrets/initialAdminPassword)
+            DOCKER_GROUP_ID=\$(getent group docker | cut -d ':' -f 3)
+            
+            # Create or overwrite the .env file with proper formatting
+            echo "JENKINS_SECRET=\$JENKINS_SECRET" > ./jenkins-backup/.env
+            echo "DOCKER_GROUP_ID=\$DOCKER_GROUP_ID" >> ./jenkins-backup/.env
+            
+            # Rebuild and restart Jenkins with updated environment variables
+            sudo docker compose down
+            sudo docker compose up -d
           EOF
         working-directory: jenkins_docker
         env:
-          CONTROL_PLANE_IP: ${{ env.JENKINS_NODE_IP }}
+          JENKINS_NODE_IP: ${{ env.JENKINS_NODE_IP }}
+
 
       - name: ArgoCD configurations
         run: |
