@@ -193,7 +193,7 @@ jobs:
 
       - name: Copy Jenkins files
         run: |
-          scp -o StrictHostKeyChecking=no -i "yaelwil-private-key.pem" -r ./jenkins_docker ubuntu@$JENKINS_NODE_IP:~/
+          scp -o StrictHostKeyChecking=no -i "./k8s/yaelwil-private-key.pem" -r ./jenkins_docker ubuntu@$JENKINS_NODE_IP:~/
         env:
           CONTROL_PLANE_IP: ${{ env.JENKINS_NODE_IP }}
 
