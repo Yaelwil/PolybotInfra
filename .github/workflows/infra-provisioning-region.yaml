@@ -199,7 +199,6 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-        working-directory: jenkins_docker
 
       - name: Build and push
         run: |
