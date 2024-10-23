@@ -204,10 +204,13 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i "../k8s/yaelwil-private-key.pem" ubuntu@$JENKINS_NODE_IP << EOF
             cd jenkins_docker
+            chmod +x ./group_id.sh
+            ./group_id.sh
+            
             sudo docker compose up -d
             
-            chmod +x ./env_file_creation.sh
-            ./env_file_creation.sh
+            chmod +x ./jenkins_secret.sh
+            ./jenkins_secret.sh
             
             # Rebuild and restart Jenkins with updated environment variables
             sudo docker compose down
