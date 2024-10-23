@@ -22,7 +22,7 @@ services:
       - JENKINS_URL=http://jenkins:8080
       - JENKINS_AGENT_NAME=agent1
       - JENKINS_AGENT_WORKDIR=/home/jenkins/agent
-      - JENKINS_SECRET=${JENKINS_SECRET}  # Ensure JENKINS_SECRET is in your .env file
+      - JENKINS_SECRET=${JENKINS_SECRET:-default_secret}  # Use a default if not set
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     group_add:
