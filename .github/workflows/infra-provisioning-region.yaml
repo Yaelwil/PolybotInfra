@@ -203,7 +203,9 @@ jobs:
       - name: Jenkins configurations
         run: |
           ssh -o StrictHostKeyChecking=no -i "../k8s/yaelwil-private-key.pem" ubuntu@$JENKINS_NODE_IP << EOF
+          
             cd jenkins_docker
+            
             chmod +x ./group_id.sh
             ./group_id.sh
             
@@ -211,6 +213,9 @@ jobs:
             
             chmod +x ./jenkins_secret.sh
             ./jenkins_secret.sh
+
+            docker cp ./jobs jenkins:lts-jdk17:/var/jenkins_home/jobs
+            docker cp ./agents jenkins:lts-jdk17:/var/jenkins_home/agents
             
             # Rebuild and restart Jenkins with updated environment variables
             sudo docker compose down
