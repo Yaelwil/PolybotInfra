@@ -206,6 +206,8 @@ jobs:
           
             cd jenkins_docker
             
+            sudo snap install ngrok
+            
             chmod +x ./group_id.sh
             ./group_id.sh
             
@@ -215,11 +217,13 @@ jobs:
             ./jenkins_secret.sh
 
             sudo docker cp ./jobs jenkins_docker-jenkins-1:/var/jenkins_home/jobs
-            sudo docker cp ./agents jenkins_docker-jenkins-1:/var/jenkins_home/agents
+            sudo docker cp ./nodes jenkins_docker-jenkins-1:/var/jenkins_home/nodes
             
             # Rebuild and restart Jenkins with updated environment variables
             sudo docker compose down
             sudo docker compose up -d
+            
+            sudo docker restart jenkins_docker-jenkins-1
           EOF
         working-directory: jenkins_docker
         env:
