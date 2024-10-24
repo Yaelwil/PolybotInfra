@@ -214,8 +214,8 @@ jobs:
             chmod +x ./jenkins_secret.sh
             ./jenkins_secret.sh
 
-            sudo docker cp ./jobs jenkins:lts-jdk17:/var/jenkins_home/jobs
-            sudo docker cp ./agents jenkins:lts-jdk17:/var/jenkins_home/agents
+            sudo docker cp ./jobs jenkins_docker-jenkins-1:/var/jenkins_home/jobs
+            sudo docker cp ./agents jenkins_docker-jenkins-1:/var/jenkins_home/agents
             
             # Rebuild and restart Jenkins with updated environment variables
             sudo docker compose down
