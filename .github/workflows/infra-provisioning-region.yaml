@@ -218,6 +218,7 @@ jobs:
 
             sudo docker cp ./jobs jenkins_docker-jenkins-1:/var/jenkins_home/jobs
             sudo docker cp ./nodes jenkins_docker-jenkins-1:/var/jenkins_home/nodes
+            sudo docker cp ./plugins jenkins_docker-jenkins-1:/var/jenkins_home/plugins
             
             # Rebuild and restart Jenkins with updated environment variables
             sudo docker compose down
