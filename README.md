@@ -1,6 +1,6 @@
 # K8S Project
 
-In this project I utilize the modules I have made in the previous project (Terraform project) and create a fully K8S self-made cluster in 2 environment (Dev + Prod) using the same 3 EC2 instances (1 Control plane + 2 worker node).  
+In this project I utilize the modules I have made in the previous project (Terraform project) and create a fully K8S self-made cluster in 2 environment (Dev + Prod) using the same 3 EC2 instances (1 Control plane + 2 worker node + 1 for jenkins pipelines).  
 (Terraform project https://github.com/Yaelwil/INTPolybotServiceAWS)
 
 ## 1. Fully self-made k8s cluster
