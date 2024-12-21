@@ -183,16 +183,16 @@ done
   # Connect to the Control Plane node and perform initialization
   ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << EOF
     # Install Flannel CNI plugin
-    kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+    kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.2/manifests/calico.yaml
 
     # Install AWS Cloud Controller Manager
     kubectl apply -k 'github.com/kubernetes/cloud-provider-aws/examples/existing-cluster/base/?ref=master'
 EOF
 
   if [ $? -eq 0 ]; then
-    echo -e "${GREEN}Flannel and AWS Cloud Controller Manager was installed ($CONTROL_PLANE_IP).${NC}"
+    echo -e "${GREEN}Calico and AWS Cloud Controller Manager was installed ($CONTROL_PLANE_IP).${NC}"
   else
-    echo -e "${RED}Flannel and AWS Cloud Controller Manager wasn't installed ($CONTROL_PLANE_IP).${NC}"
+    echo -e "${RED}Calico and AWS Cloud Controller Manager wasn't installed ($CONTROL_PLANE_IP).${NC}"
     exit 1
   fi
 
@@ -271,11 +271,6 @@ ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP"
   kubectl create namespace argocd
   kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-#  # Install ArgoCD CLI
-#  curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.5.0/argocd-linux-amd64
-#  chmod +x /usr/local/bin/argocd
-#  argocd version
-
   # Automatically approve and install Python and pip
   sudo apt update
   sudo apt install -y python3 python3-venv
@@ -292,6 +287,124 @@ if [ $? -eq 0 ]; then
   echo -e "${GREEN}K8S dashboard, ArgoCD and Python packages were installed${NC}"
 else
   echo -e "${RED}K8S dashboard, ArgoCD and Python packages weren't installed${NC}"
+  exit 1
+fi
+
+######################################################################
+# Install Fluent-bit, Elastic Search, kibana, Prometheus and Grafana #
+######################################################################
+
+ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$EC2_USER@$CONTROL_PLANE_IP" << 'EOF'
+  echo "Installing monitoring tools..."
+
+  # Create or overwrite fluent-values.yaml
+  cat <<FLUENT_CONF > fluent-values.yaml
+  env:
+    - name: ELASTIC_URL
+      value: quickstart-es-http   # TODO change according to your elastic service address
+    - name: ES_USER
+      value: elastic
+    - name: ES_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: quickstart-es-elastic-user
+          key: elastic
+
+  config:
+    outputs: |
+      [OUTPUT]
+          Name es
+          Match kube.*
+          Host \${ELASTIC_URL}
+          HTTP_User \${ES_USER}
+          HTTP_Passwd \${ES_PASSWORD}
+          Suppress_Type_Name On
+          Logstash_Format On
+          Retry_Limit False
+          tls On
+          tls.verify Off
+          Replace_Dots On
+
+      [OUTPUT]
+          Name es
+          Match host.*
+          Host \${ELASTIC_URL}
+          HTTP_User \${ES_USER}
+          HTTP_Passwd \${ES_PASSWORD}
+          Suppress_Type_Name On
+          Logstash_Format On
+          Logstash_Prefix node
+          Retry_Limit False
+          tls On
+          tls.verify Off
+          Replace_Dots On
+FLUENT_CONF
+
+  # Add the Fluent Helm repo
+  helm repo add fluent https://fluent.github.io/helm-charts
+
+  # Update the Helm repository to make sure we have the latest charts
+  helm repo update
+
+  # Install or upgrade Fluent Bit with the custom configuration
+  helm upgrade --install fluent-bit fluent/fluent-bit -f fluent-values.yaml
+
+
+  # Install elastic search
+  kubectl create -f https://download.elastic.co/downloads/eck/2.13.0/crds.yaml
+  kubectl apply -f https://download.elastic.co/downloads/eck/2.13.0/operator.yaml
+
+  cat <<ES_CONF | kubectl apply -f -
+  apiVersion: elasticsearch.k8s.elastic.co/v1
+  kind: Elasticsearch
+  metadata:
+    name: quickstart
+  spec:
+    version: 8.15.2
+    nodeSets:
+    - name: default
+      count: 1
+      config:
+        node.store.allow_mmap: false
+ES_CONF
+
+  # Install Kibana
+  cat <<KIBANA_CONF | kubectl apply -f -
+  apiVersion: kibana.k8s.elastic.co/v1
+  kind: Kibana
+  metadata:
+    name: quickstart
+  spec:
+    version: 8.15.2
+    count: 1
+    elasticsearchRef:
+      name: quickstart
+KIBANA_CONF
+
+  # Ensure the 'monitoring' namespace exists
+  kubectl create namespace monitoring || echo "Namespace 'monitoring' already exists"
+
+  # Add the Prometheus Helm chart repository
+  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+  # Add the Grafana Helm chart repository
+  helm repo add grafana https://grafana.github.io/helm-charts
+
+  # Update the repositories to make sure you have the latest version of the charts
+  helm repo update
+
+  # Install Prometheus using Helm in the 'monitoring' namespace
+  helm install prometheus prometheus-community/prometheus --namespace monitoring
+
+  # Install Grafana using Helm in the 'monitoring' namespace
+  helm install grafana grafana/grafana --namespace monitoring
+EOF
+
+
+if [ $? -eq 0 ]; then
+  echo -e "${GREEN}Fluent-bit, Elastic Search, kibana, Prometheus and Grafana were installed${NC}"
+else
+  echo -e "${RED}Fluent-bit, Elastic Search, kibana, Prometheus and Grafana weren't installed${NC}"
   exit 1
 fi
 done
