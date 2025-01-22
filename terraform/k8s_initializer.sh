@@ -177,7 +177,7 @@ done
 done
 
 #############################################################
-# Step 4: Install Flannel and AWS Cloud Controller Manager  #
+# Step 4: Install Calico and AWS Cloud Controller Manager  #
 #############################################################
 
   # Connect to the Control Plane node and perform initialization
